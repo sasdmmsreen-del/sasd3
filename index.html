@@ -1077,45 +1077,83 @@
 
 
             <!-- Trainees Controls & Data Table -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                    <div>
-                        <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                            <span>سجل المتدربين وتقييم فريق التشخيص المهني</span>
-                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-bold">مركز معرتمصرين</span>
-                        </h3>
-                        <p class="text-slate-500 text-xs mt-1">عرض وتقييم القدرات المهنية وإدخال ملخص نتائج فريق التشخيص وقرارات القبول</p>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
+                <!-- عنوان القسم: شريط مظلل بعرض كامل -->
+                <div class="mb-5 overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-l from-emerald-50 via-white to-slate-50 shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-r-4 border-emerald-600 px-4 py-4 sm:px-6">
+                        <div class="min-w-0">
+                            <h3 class="flex flex-wrap items-center gap-2 text-lg sm:text-xl font-black text-slate-900">
+                                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-700 text-white shadow-sm"><i class="fa-solid fa-users"></i></span>
+                                <span>سجل المتدربين وتقييم فريق التشخيص المهني</span>
+                            </h3>
+                            <p class="mt-2 text-sm leading-6 text-slate-600">عرض السجلات وتقييم القدرات المهنية ومتابعة قرارات القبول والتسكين.</p>
+                        </div>
+                        <span class="inline-flex shrink-0 items-center gap-2 self-start sm:self-center rounded-full border border-emerald-200 bg-emerald-100 px-4 py-2 text-xs font-extrabold text-emerald-900">
+                            <i class="fa-solid fa-location-dot text-emerald-700"></i>
+                            مركز معرتمصرين
+                        </span>
+                    </div>
+                </div>
+
+                <!-- الفلاتر: شبكة متوازنة تستفيد من عرض الصفحة -->
+                <div class="mb-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-3 sm:p-5">
+                    <div class="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+                        <div class="flex items-center gap-2 text-sm font-extrabold text-slate-800">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-emerald-700 border border-emerald-100"><i class="fa-solid fa-filter"></i></span>
+                            البحث وتصفية السجلات
+                        </div>
+                        <span class="text-xs font-medium text-slate-500">يمكن الجمع بين أكثر من فلتر في الوقت نفسه</span>
                     </div>
 
+                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-12 gap-3 items-stretch">
+                        <div class="relative min-w-0 sm:col-span-2 xl:col-span-4">
+                            <label for="search-input" class="mb-1.5 block text-xs font-bold text-slate-600">بحث بالاسم أو رقم الملف</label>
+                            <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-[2.65rem] text-slate-400 text-sm"></i>
+                            <input type="text" id="search-input" oninput="filterTrainees()" placeholder="اكتب اسم المستفيد أو رقم الملف..." aria-label="بحث باسم المستفيد أو رقم الملف" class="w-full min-w-0 rounded-xl border border-slate-300 bg-white py-3 pr-10 pl-4 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500">
+                        </div>
 
-                    <!-- البحث والفلاتر: ترتيب واضح ومتجاوب -->
-                    <div class="space-y-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 items-center">
-                            <div class="relative w-full min-w-0 sm:col-span-2 xl:col-span-2">
-                                <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-3 text-slate-400 text-sm"></i>
-                                <input type="text" id="search-input" oninput="filterTrainees()" placeholder="بحث بالاسم أو رقم الملف..." aria-label="بحث باسم المستفيد أو رقم الملف" class="w-full min-w-0 pr-10 pl-4 py-2.5 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 bg-white">
-                            </div>
+                        <div class="relative min-w-0 xl:col-span-2">
+                            <label for="filter-phone" class="mb-1.5 block text-xs font-bold text-slate-600">رقم الهاتف</label>
+                            <i class="fa-solid fa-phone absolute right-3.5 top-[2.65rem] text-slate-400 text-sm"></i>
+                            <input type="tel" id="filter-phone" oninput="filterTrainees()" inputmode="numeric" placeholder="رقم هاتف المتدرب" aria-label="فلترة برقم هاتف المتدرب" class="w-full min-w-0 rounded-xl border border-slate-300 bg-white py-3 pr-10 pl-3 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500">
+                        </div>
 
-                            <div class="relative w-full min-w-0">
-                                <i class="fa-solid fa-phone absolute right-3.5 top-3 text-slate-400 text-sm"></i>
-                                <input type="tel" id="filter-phone" oninput="filterTrainees()" inputmode="numeric" placeholder="فلترة برقم هاتف المتدرب" aria-label="فلترة برقم هاتف المتدرب" class="w-full min-w-0 pr-10 pl-4 py-2.5 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 bg-white">
-                            </div>
-
-                            <select id="filter-gender" onchange="filterTrainees()" aria-label="فلترة حسب الجنس" class="w-full min-w-0 px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-medium">
+                        <div class="min-w-0 xl:col-span-2">
+                            <label for="filter-gender" class="mb-1.5 block text-xs font-bold text-slate-600">الجنس</label>
+                            <select id="filter-gender" onchange="filterTrainees()" aria-label="فلترة حسب الجنس" class="w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-medium focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500">
                                 <option value="">الجنس: الكل</option>
                                 <option value="ذكر">ذكور</option>
                                 <option value="أنثى">إناث</option>
                             </select>
+                        </div>
 
-                            <select id="filter-age" onchange="filterTrainees()" aria-label="فلترة حسب العمر" class="w-full min-w-0 px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-medium">
-                                <option value="">العمر: جميع الأعمار</option>
+                        <div class="min-w-0 xl:col-span-2">
+                            <label for="filter-age" class="mb-1.5 block text-xs font-bold text-slate-600">الفئة العمرية</label>
+                            <select id="filter-age" onchange="filterTrainees()" aria-label="فلترة حسب العمر" class="w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-medium focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500">
+                                <option value="">جميع الأعمار</option>
                                 <option value="under18">أقل من 18 سنة</option>
                                 <option value="exact18">18 سنة بالضبط</option>
                                 <option value="over18">أكبر من 18 سنة</option>
                             </select>
+                        </div>
 
-                            <select id="filter-path" onchange="filterTrainees()" aria-label="فلترة حسب المسار المهني" class="w-full min-w-0 xl:col-span-2 px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-medium">
-                                <option value="">المسار المهني: جميع المسارات</option>
+                        <div class="min-w-0 xl:col-span-2">
+                            <label for="filter-batch" class="mb-1.5 block text-xs font-bold text-slate-600">الدفعة</label>
+                            <select id="filter-batch" onchange="filterTrainees()" aria-label="فلترة حسب الدفعة" class="w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-medium focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500">
+                                <option value="">جميع الدفعات</option>
+                                <option value="1">الدفعة الأولى (1)</option>
+                                <option value="2">الدفعة الثانية (2)</option>
+                                <option value="3">الدفعة الثالثة (3)</option>
+                                <option value="4">الدفعة الرابعة (4)</option>
+                                <option value="5">الدفعة الخامسة (5)</option>
+                                <option value="بدون دفعة">لم تُحدد الدفعة</option>
+                            </select>
+                        </div>
+
+                        <div class="min-w-0 sm:col-span-2 xl:col-span-5">
+                            <label for="filter-path" class="mb-1.5 block text-xs font-bold text-slate-600">المسار المهني</label>
+                            <select id="filter-path" onchange="filterTrainees()" aria-label="فلترة حسب المسار المهني" class="w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-medium focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500">
+                                <option value="">جميع المسارات المهنية</option>
                                 <option value="الخياطة الإنتاجية / ذكور">الخياطة الإنتاجية / ذكور</option>
                                 <option value="الخياطة الإنتاجية / اناث">الخياطة الإنتاجية / إناث</option>
                                 <option value="صيانة الجوال / ذكور">صيانة الجوال / ذكور</option>
@@ -1127,27 +1165,29 @@
                                 <option value="الحلاقة الرجالية">الحلاقة الرجالية</option>
                                 <option value="الكوافيرة النسائية">الكوافيرة النسائية</option>
                             </select>
+                        </div>
 
-                            <select id="filter-batch" onchange="filterTrainees()" aria-label="فلترة حسب الدفعة" class="w-full min-w-0 px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-medium">
-                                <option value="">الدفعة: جميع الدفعات</option>
-                                <option value="1">الدفعة الأولى (1)</option>
-                                <option value="2">الدفعة الثانية (2)</option>
-                                <option value="3">الدفعة الثالثة (3)</option>
-                                <option value="4">الدفعة الرابعة (4)</option>
-                                <option value="5">الدفعة الخامسة (5)</option>
-                                <option value="بدون دفعة">لم تُحدد الدفعة</option>
-                            </select>
-
-                            <select id="filter-decision" onchange="filterTrainees()" aria-label="فلترة حسب قرار القبول والتسكين" class="w-full min-w-0 px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-medium">
-                                <option value="">القرار: جميع القرارات</option>
+                        <div class="min-w-0 sm:col-span-2 xl:col-span-3">
+                            <label for="filter-decision" class="mb-1.5 block text-xs font-bold text-slate-600">قرار القبول والتسكين</label>
+                            <select id="filter-decision" onchange="filterTrainees()" aria-label="فلترة حسب قرار القبول والتسكين" class="w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-medium focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500">
+                                <option value="">جميع القرارات</option>
                                 <option value="قبول وتسكين">قبول وتسكين</option>
                                 <option value="تأجيل القبول">مؤجل</option>
                                 <option value="قيد التقييم">قيد التقييم</option>
                             </select>
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-2 border-t border-slate-200 pt-3">
-                            <select id="assign-batch" onchange="assignSelectedBatch(this.value); this.value=''" class="px-3 py-2.5 text-xs rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-bold">
+                        <div class="flex items-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white px-3 py-3 text-xs leading-5 text-slate-500 sm:col-span-2 xl:col-span-4">
+                            <i class="fa-solid fa-circle-info text-emerald-700 text-base"></i>
+                            <span>تُطبّق الفلاتر المختارة على السجلات المعروضة وعلى ملف Excel عند التصدير.</span>
+                        </div>
+                    </div>
+
+                    <!-- الإجراءات الرئيسية في شريط مستقل -->
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-3 border-t border-slate-200 pt-4 items-stretch">
+                        <div class="min-w-0 xl:col-span-4">
+                            <label for="assign-batch" class="mb-1.5 block text-xs font-bold text-slate-600">إجراء جماعي للمتدربين المحددين</label>
+                            <select id="assign-batch" onchange="assignSelectedBatch(this.value); this.value=''" class="w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-bold focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500">
                                 <option value="">تعيين الدفعة للمحددين...</option>
                                 <option value="1">تعيين: الدفعة الأولى (1)</option>
                                 <option value="2">تعيين: الدفعة الثانية (2)</option>
@@ -1156,18 +1196,19 @@
                                 <option value="5">تعيين: الدفعة الخامسة (5)</option>
                                 <option value="بدون دفعة">إزالة رقم الدفعة</option>
                             </select>
-
-                            <button type="button" onclick="renumberAllTrainees()" title="ينزّل نسخة احتياطية أولاً ثم يرقّم جميع السجلات بالتسلسل" class="px-3 py-2.5 text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-sm transition flex items-center">
-                                <i class="fa-solid fa-list-ol ml-1.5"></i> إعادة ترقيم المستفيدين
-                            </button>
-
-                            <button type="button" onclick="exportToCSV()" title="تصدير السجلات المطابقة لجميع الفلاتر إلى Excel" class="px-3 py-2.5 text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl shadow transition flex items-center">
-                                <i class="fa-solid fa-file-excel ml-1.5"></i> تصدير Excel حسب الفلاتر
-                            </button>
                         </div>
+
+                        <button type="button" onclick="renumberAllTrainees()" title="ينزّل نسخة احتياطية أولاً ثم يرقّم جميع السجلات بالتسلسل" class="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-600 px-4 py-3 text-sm font-extrabold text-white shadow-sm transition hover:bg-amber-700 md:mt-6 xl:col-span-4">
+                            <i class="fa-solid fa-list-ol"></i>
+                            إعادة ترقيم المستفيدين
+                        </button>
+
+                        <button type="button" onclick="exportToCSV()" title="تصدير السجلات المطابقة لجميع الفلاتر إلى Excel" class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-4 py-3 text-sm font-extrabold text-white shadow-sm transition hover:bg-emerald-800 md:mt-6 xl:col-span-4">
+                            <i class="fa-solid fa-file-excel"></i>
+                            تصدير Excel حسب الفلاتر
+                        </button>
                     </div>
                 </div>
-
                 <!-- Pagination at the top: navigate without scrolling to the bottom -->
                 <div id="trainees-pagination-top" class="mt-3 mb-3 flex flex-col sm:flex-row items-center justify-between gap-3 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 shadow-sm">
                     <div class="flex items-center gap-2 text-xs font-bold text-emerald-900">

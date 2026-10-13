@@ -554,25 +554,7 @@
         </div>
 
 
-        <!-- حماية البيانات: توضيح صريح لحالة الحفظ المحلي والسحابي -->
-        <section id="data-safety-panel" class="no-print mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:p-5 shadow-sm">
-            <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-                <div class="min-w-0 flex-1">
-                    <div class="flex flex-wrap items-center gap-2 mb-1.5">
-                        <i class="fa-solid fa-shield-halved text-amber-700 text-lg"></i>
-                        <h3 class="font-black text-slate-900">حماية بيانات المستفيدين</h3>
-                        <span id="data-safety-status" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-200 text-slate-700">جارٍ فحص حالة الحفظ...</span>
-                    </div>
-                    <p id="data-safety-message" class="text-sm text-slate-700 leading-6">سيظهر هنا بوضوح هل حُفظت البيانات في Supabase أم ما زالت تنتظر الرفع.</p>
-                    <p class="text-xs text-amber-900 mt-1.5 leading-5">قاعدة البيانات هي النسخة الأساسية بعد تأكيد المزامنة. يحتفظ المتصفح بنسخة أمان مؤقتة فقط لتجنّب فقدان العمل إذا انقطع الاتصال. لا تمسح بيانات المتصفح قبل ظهور حالة «تم الحفظ في قاعدة البيانات» وتنزيل نسخة JSON خارجية.</p>
-                </div>
-                <div class="flex flex-wrap gap-2 shrink-0">
-                    <button type="button" onclick="backupData()" class="px-3 py-2.5 text-xs font-bold bg-blue-700 hover:bg-blue-800 text-white rounded-xl"><i class="fa-solid fa-download ml-1.5"></i> تنزيل نسخة احتياطية</button>
-                    <button type="button" onclick="openCloudSettings()" class="px-3 py-2.5 text-xs font-bold bg-violet-700 hover:bg-violet-800 text-white rounded-xl"><i class="fa-solid fa-database ml-1.5"></i> إعداد الحفظ السحابي</button>
-                    <button type="button" onclick="pushToCloud(false)" class="px-3 py-2.5 text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl"><i class="fa-solid fa-cloud-arrow-up ml-1.5"></i> رفع البيانات إلى السحابة</button>
-                </div>
-            </div>
-        </section>
+        <!-- أزيلت لوحة التوضيح المتكررة بناءً على طلب المستخدم؛ بقيت أزرار النسخ الاحتياطي والاستعادة وإعداد قاعدة البيانات في الرأس. -->
 
         <!-- SECTION 1: Registration Form -->
         <section id="view-form" class="space-y-6">

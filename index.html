@@ -256,6 +256,15 @@
             box-sizing: border-box;
             overflow: hidden;
         }
+        .certificate-logo {
+            display: block;
+            width: 66mm;
+            max-width: 88%;
+            max-height: 22mm;
+            height: auto;
+            object-fit: contain;
+            margin: 0 auto 5mm;
+        }
         .certificate-topline {
             font-size: 20pt;
             font-weight: 800;
@@ -544,6 +553,26 @@
             </div>
         </div>
 
+
+        <!-- حماية البيانات: توضيح صريح لحالة الحفظ المحلي والسحابي -->
+        <section id="data-safety-panel" class="no-print mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:p-5 shadow-sm">
+            <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+                <div class="min-w-0 flex-1">
+                    <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                        <i class="fa-solid fa-shield-halved text-amber-700 text-lg"></i>
+                        <h3 class="font-black text-slate-900">حماية بيانات المستفيدين</h3>
+                        <span id="data-safety-status" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-200 text-slate-700">جارٍ فحص حالة الحفظ...</span>
+                    </div>
+                    <p id="data-safety-message" class="text-sm text-slate-700 leading-6">سيظهر هنا بوضوح هل حُفظت البيانات في Supabase أم ما زالت تنتظر الرفع.</p>
+                    <p class="text-xs text-amber-900 mt-1.5 leading-5">قاعدة البيانات هي النسخة الأساسية بعد تأكيد المزامنة. يحتفظ المتصفح بنسخة أمان مؤقتة فقط لتجنّب فقدان العمل إذا انقطع الاتصال. لا تمسح بيانات المتصفح قبل ظهور حالة «تم الحفظ في قاعدة البيانات» وتنزيل نسخة JSON خارجية.</p>
+                </div>
+                <div class="flex flex-wrap gap-2 shrink-0">
+                    <button type="button" onclick="backupData()" class="px-3 py-2.5 text-xs font-bold bg-blue-700 hover:bg-blue-800 text-white rounded-xl"><i class="fa-solid fa-download ml-1.5"></i> تنزيل نسخة احتياطية</button>
+                    <button type="button" onclick="openCloudSettings()" class="px-3 py-2.5 text-xs font-bold bg-violet-700 hover:bg-violet-800 text-white rounded-xl"><i class="fa-solid fa-database ml-1.5"></i> إعداد الحفظ السحابي</button>
+                    <button type="button" onclick="pushToCloud(false)" class="px-3 py-2.5 text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl"><i class="fa-solid fa-cloud-arrow-up ml-1.5"></i> رفع البيانات إلى السحابة</button>
+                </div>
+            </div>
+        </section>
 
         <!-- SECTION 1: Registration Form -->
         <section id="view-form" class="space-y-6">
@@ -1077,64 +1106,95 @@
                     </div>
 
 
-                    <!-- Search and Filters -->
-                    <div class="flex flex-wrap items-center gap-2">
-                        <div class="relative flex-1 sm:w-64">
-                            <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-3 text-slate-400 text-sm"></i>
-                            <input type="text" id="search-input" onkeyup="filterTrainees()" placeholder="بحث بالاسم أو هاتف أو ملف..." class="w-full pr-10 pl-4 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500">
+                    <!-- البحث والفلاتر: ترتيب واضح ومتجاوب -->
+                    <div class="space-y-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 items-center">
+                            <div class="relative w-full min-w-0 sm:col-span-2 xl:col-span-2">
+                                <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-3 text-slate-400 text-sm"></i>
+                                <input type="text" id="search-input" oninput="filterTrainees()" placeholder="بحث بالاسم أو رقم الملف..." aria-label="بحث باسم المستفيد أو رقم الملف" class="w-full min-w-0 pr-10 pl-4 py-2.5 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 bg-white">
+                            </div>
+
+                            <div class="relative w-full min-w-0">
+                                <i class="fa-solid fa-phone absolute right-3.5 top-3 text-slate-400 text-sm"></i>
+                                <input type="tel" id="filter-phone" oninput="filterTrainees()" inputmode="numeric" placeholder="فلترة برقم هاتف المتدرب" aria-label="فلترة برقم هاتف المتدرب" class="w-full min-w-0 pr-10 pl-4 py-2.5 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 bg-white">
+                            </div>
+
+                            <select id="filter-gender" onchange="filterTrainees()" aria-label="فلترة حسب الجنس" class="w-full min-w-0 px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-medium">
+                                <option value="">الجنس: الكل</option>
+                                <option value="ذكر">ذكور</option>
+                                <option value="أنثى">إناث</option>
+                            </select>
+
+                            <select id="filter-age" onchange="filterTrainees()" aria-label="فلترة حسب العمر" class="w-full min-w-0 px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-medium">
+                                <option value="">العمر: جميع الأعمار</option>
+                                <option value="under18">أقل من 18 سنة</option>
+                                <option value="exact18">18 سنة بالضبط</option>
+                                <option value="over18">أكبر من 18 سنة</option>
+                            </select>
+
+                            <select id="filter-path" onchange="filterTrainees()" aria-label="فلترة حسب المسار المهني" class="w-full min-w-0 xl:col-span-2 px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-medium">
+                                <option value="">المسار المهني: جميع المسارات</option>
+                                <option value="الخياطة الإنتاجية / ذكور">الخياطة الإنتاجية / ذكور</option>
+                                <option value="الخياطة الإنتاجية / اناث">الخياطة الإنتاجية / إناث</option>
+                                <option value="صيانة الجوال / ذكور">صيانة الجوال / ذكور</option>
+                                <option value="صيانة الجوال / اناث">صيانة الجوال / إناث</option>
+                                <option value="الاعمال اليدوية / ذكور">الأعمال اليدوية / ذكور</option>
+                                <option value="الاعمال اليدوية / اناث">الأعمال اليدوية / إناث</option>
+                                <option value="الحاسب الآلي / ذكور">الحاسب الآلي / ذكور</option>
+                                <option value="الحاسب الآلي / اناث">الحاسب الآلي / إناث</option>
+                                <option value="الحلاقة الرجالية">الحلاقة الرجالية</option>
+                                <option value="الكوافيرة النسائية">الكوافيرة النسائية</option>
+                            </select>
+
+                            <select id="filter-batch" onchange="filterTrainees()" aria-label="فلترة حسب الدفعة" class="w-full min-w-0 px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-medium">
+                                <option value="">الدفعة: جميع الدفعات</option>
+                                <option value="1">الدفعة الأولى (1)</option>
+                                <option value="2">الدفعة الثانية (2)</option>
+                                <option value="3">الدفعة الثالثة (3)</option>
+                                <option value="4">الدفعة الرابعة (4)</option>
+                                <option value="5">الدفعة الخامسة (5)</option>
+                                <option value="بدون دفعة">لم تُحدد الدفعة</option>
+                            </select>
+
+                            <select id="filter-decision" onchange="filterTrainees()" aria-label="فلترة حسب قرار القبول والتسكين" class="w-full min-w-0 px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-medium">
+                                <option value="">القرار: جميع القرارات</option>
+                                <option value="قبول وتسكين">قبول وتسكين</option>
+                                <option value="تأجيل القبول">مؤجل</option>
+                                <option value="قيد التقييم">قيد التقييم</option>
+                            </select>
                         </div>
 
+                        <div class="flex flex-wrap items-center gap-2 border-t border-slate-200 pt-3">
+                            <select id="assign-batch" onchange="assignSelectedBatch(this.value); this.value=''" class="px-3 py-2.5 text-xs rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-bold">
+                                <option value="">تعيين الدفعة للمحددين...</option>
+                                <option value="1">تعيين: الدفعة الأولى (1)</option>
+                                <option value="2">تعيين: الدفعة الثانية (2)</option>
+                                <option value="3">تعيين: الدفعة الثالثة (3)</option>
+                                <option value="4">تعيين: الدفعة الرابعة (4)</option>
+                                <option value="5">تعيين: الدفعة الخامسة (5)</option>
+                                <option value="بدون دفعة">إزالة رقم الدفعة</option>
+                            </select>
 
-                        <div class="relative sm:w-64">
-                            <i class="fa-solid fa-phone absolute right-3.5 top-3 text-slate-400 text-sm"></i>
-                            <input type="tel" id="filter-phone" oninput="filterTrainees()" inputmode="numeric" placeholder="فلترة برقم هاتف المتدرب" class="w-full pr-10 pl-4 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500">
+                            <button type="button" onclick="renumberAllTrainees()" title="ينزّل نسخة احتياطية أولاً ثم يرقّم جميع السجلات بالتسلسل" class="px-3 py-2.5 text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-sm transition flex items-center">
+                                <i class="fa-solid fa-list-ol ml-1.5"></i> إعادة ترقيم المستفيدين
+                            </button>
+
+                            <button type="button" onclick="exportToCSV()" title="تصدير السجلات المطابقة لجميع الفلاتر إلى Excel" class="px-3 py-2.5 text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl shadow transition flex items-center">
+                                <i class="fa-solid fa-file-excel ml-1.5"></i> تصدير Excel حسب الفلاتر
+                            </button>
                         </div>
-
-
-                        <select id="filter-path" onchange="filterTrainees()" class="px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-medium">
-                            <option value="">جميع المسارات المهنية</option>
-                            <option value="الخياطة الإنتاجية / ذكور">الخياطة الإنتاجية / ذكور</option>
-                            <option value="الخياطة الإنتاجية / اناث">الخياطة الإنتاجية / إناث</option>
-                            <option value="صيانة الجوال / ذكور">صيانة الجوال / ذكور</option>
-                            <option value="صيانة الجوال / اناث">صيانة الجوال / إناث</option>
-                            <option value="الاعمال اليدوية / ذكور">الأعمال اليدوية / ذكور</option>
-                            <option value="الاعمال اليدوية / اناث">الأعمال اليدوية / إناث</option>
-                            <option value="الحاسب الآلي / ذكور">الحاسب الآلي / ذكور</option>
-                            <option value="الحاسب الآلي / اناث">الحاسب الآلي / إناث</option>
-                            <option value="الحلاقة الرجالية">الحلاقة الرجالية</option>
-                            <option value="الكوافيرة النسائية">الكوافيرة النسائية</option>
-                        </select>
-
-
-                        <select id="filter-batch" onchange="filterTrainees()" class="px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-medium">
-                            <option value="">جميع الدفعات</option>
-                            <option value="1">الدفعة الأولى (1)</option>
-                            <option value="2">الدفعة الثانية (2)</option>
-                            <option value="3">الدفعة الثالثة (3)</option>
-                            <option value="4">الدفعة الرابعة (4)</option>
-                            <option value="5">الدفعة الخامسة (5)</option>
-                            <option value="بدون دفعة">لم تُحدد الدفعة</option>
-                        </select>
-
-
-                        <select id="assign-batch" onchange="assignSelectedBatch(this.value); this.value=''" class="px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-emerald-500 font-bold">
-                            <option value="">تعيين الدفعة للمحددين...</option>
-                            <option value="1">تعيين: الدفعة الأولى (1)</option>
-                            <option value="2">تعيين: الدفعة الثانية (2)</option>
-                            <option value="3">تعيين: الدفعة الثالثة (3)</option>
-                            <option value="4">تعيين: الدفعة الرابعة (4)</option>
-                            <option value="5">تعيين: الدفعة الخامسة (5)</option>
-                            <option value="بدون دفعة">إزالة رقم الدفعة</option>
-                        </select>
-
-
-                        <button onclick="exportToCSV()" title="تصدير إلى Excel" class="px-3 py-2 text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl shadow transition flex items-center">
-                            <i class="fa-solid fa-file-excel ml-1"></i>
-                            تصدير Excel
-                        </button>
                     </div>
                 </div>
 
+                <!-- Pagination at the top: navigate without scrolling to the bottom -->
+                <div id="trainees-pagination-top" class="mt-3 mb-3 flex flex-col sm:flex-row items-center justify-between gap-3 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 shadow-sm">
+                    <div class="flex items-center gap-2 text-xs font-bold text-emerald-900">
+                        <i class="fa-solid fa-file-lines"></i>
+                        <span>التنقل بين الصفحات</span>
+                        <span id="pagination-info-top" class="text-slate-600">عرض 0 من 0</span>
+                    </div>
+                    <div id="pagination-controls-top" class="flex items-center gap-1 flex-wrap justify-center"></div>
+                </div>
 
                 <!-- Table with Diagnostic Evaluation Details -->
                 <div class="overflow-x-auto rounded-xl border border-slate-200">
@@ -1552,6 +1612,7 @@
     <div id="certificate-sheet" class="certificate-sheet" aria-hidden="true">
         <div class="certificate-border">
             <div class="certificate-inner">
+                <img id="certificate_print_logo" class="certificate-logo" alt="شعار الجمعية السورية للدراسات والتطوير SASD" />
                 <div class="certificate-topline">مركز معرتمصرين للتدريب المهني</div>
                 <div class="certificate-subtitle">وحدة التدريب والتأهيل المهني</div>
                 <div id="certificate_print_title" class="certificate-title">شهادة تدريب مهني</div>
@@ -1585,35 +1646,35 @@
             <div class="bg-violet-800 text-white px-5 py-4 flex items-center justify-between">
                 <div>
                     <h2 class="font-black text-lg">قاعدة البيانات على الإنترنت</h2>
-                    <p class="text-xs text-violet-100 mt-1">ربط النظام بقاعدة بيانات Supabase مع الحفاظ على Local Storage كنسخة محلية</p>
+                    <p class="text-xs text-violet-100 mt-1">Supabase هي قاعدة البيانات المركزية؛ المتصفح يحتفظ بنسخة مؤقتة للعمل دون اتصال</p>
                 </div>
                 <button onclick="closeCloudSettings()" class="text-white text-xl">&times;</button>
             </div>
             <div class="p-5 space-y-4">
-                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm leading-7 text-blue-900"><strong>على حاسوب جديد:</strong> رابط Supabase والمفتاح العام موجودان مسبقًا. تحتاج فقط إلى تسجيل الدخول بنفس حساب Supabase حتى تظهر السجلات المشتركة. إعدادات المتصفح والجلسة لا تنتقل تلقائيًا بين الحواسيب.</div>
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm leading-7 text-blue-900"><strong>الحفظ السحابي في هذه النسخة:</strong> سجّل الدخول مرة واحدة ببريد مستخدم المصادقة وكلمة مروره في هذا المشروع. بعد نجاح الدخول تُرفع التعديلات تلقائيًا إلى قاعدة البيانات عند الحفظ. هذه كلمة مرور مستخدم التطبيق داخل Supabase وليست بالضرورة كلمة مرور لوحة التحكم.</div>
                 <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm leading-7 text-amber-900">
-                    <strong>مهم:</strong> لا تدخل أي مفتاح Service Role هنا. استخدم فقط <b>Project URL</b> و<b>anon/public key</b> مع سياسات RLS صحيحة. لأن النظام يتضمن بيانات شخصية وصحية، يجب تأمين قاعدة البيانات قبل المزامنة.
+                    <strong>مهم:</strong> لا تدخل أي مفتاح Service Role هنا. استخدم فقط <b>Project URL</b> و<b>Publishable / anon key</b>. بيانات المتدربين تبقى في Supabase، ولا تقوم المزامنة بحذف السجلات الموجودة في السحابة تلقائيًا.
                 </div>
                 <div class="grid md:grid-cols-2 gap-4">
                     <label class="block text-sm font-bold">رابط مشروع Supabase
                         <input id="cloud_url" type="url" placeholder="https://xxxxx.supabase.co" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-300" dir="ltr">
                     </label>
-                    <label class="block text-sm font-bold">Anon / Publishable Key
+                    <label class="block text-sm font-bold">Publishable / Anon Key
                         <input id="cloud_key" type="password" placeholder="ضع المفتاح العام هنا" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-300" dir="ltr">
                     </label>
                 </div>
                 <div class="grid md:grid-cols-2 gap-4">
-                    <label class="block text-sm font-bold">بريد حساب قاعدة البيانات
-                        <input id="cloud_email" type="email" placeholder="name@example.com" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-300" dir="ltr">
+                    <label class="block text-sm font-bold">بريد الحساب
+                        <input id="cloud_email" type="email" autocomplete="username" placeholder="name@example.com" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-300" dir="ltr">
                     </label>
-                    <label class="block text-sm font-bold">كلمة المرور
-                        <input id="cloud_password" type="password" placeholder="تُستخدم لتسجيل الدخول فقط" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-300" dir="ltr">
+                    <label class="block text-sm font-bold">كلمة مرور الحساب
+                        <input id="cloud_password" type="password" autocomplete="current-password" placeholder="أدخل كلمة المرور التي أنشأتها في Supabase" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-300" dir="ltr">
                     </label>
                 </div>
-                <div class="text-xs text-slate-600 leading-6">يجب تسجيل الدخول بحساب Supabase حتى تصبح البيانات محمية بسياسة RLS. لا يتم حفظ كلمة المرور داخل النظام. بعد تسجيل الدخول تُحفظ جلسة الدخول فقط.</div>
+                <div class="text-xs text-slate-600 leading-6">لا يحتاج تسجيل الدخول اليومي إلى SMTP أو رمز بريد. أدخل كلمة مرور مستخدم المصادقة الموجود في Authentication → Users. كلمة المرور لا تُحفظ في المتصفح ولا تُضمَّن في ملف HTML. إذا لم تنجح كلمة المرور، فلن يُعدّ الحفظ السحابي مؤكدًا.</div>
                 <div class="flex flex-wrap gap-2 pt-2 border-t">
                     <button onclick="saveCloudSettings()" class="px-4 py-2.5 bg-violet-700 text-white rounded-xl font-bold">حفظ الإعدادات</button>
-                    <button onclick="loginToCloud()" class="px-4 py-2.5 bg-slate-800 text-white rounded-xl font-bold">تسجيل الدخول</button>
+                    <button onclick="loginWithPassword()" class="px-4 py-2.5 bg-slate-800 text-white rounded-xl font-bold">تسجيل الدخول</button>
                     <button onclick="logoutFromCloud()" class="px-4 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-bold">تسجيل الخروج</button>
                     <button onclick="testCloudConnection()" class="px-4 py-2.5 bg-slate-800 text-white rounded-xl font-bold">اختبار الاتصال</button>
                     <button onclick="pushToCloud()" class="px-4 py-2.5 bg-emerald-700 text-white rounded-xl font-bold">رفع البيانات إلى السحابة</button>
@@ -1640,6 +1701,13 @@
 
     <script>
         const STORAGE_KEY = 'SASD_TRAINEES_DATA_V3';
+        const LOCAL_RECOVERY_KEY = 'SASD_TRAINEES_LAST_GOOD_BACKUP_V1';
+        const CORRUPT_STORAGE_KEY = 'SASD_TRAINEES_CORRUPT_RAW_V1';
+        const CLOUD_LAST_SYNC_KEY = 'SASD_CLOUD_LAST_SYNC_V1';
+        const CLOUD_DIRTY_KEY = 'SASD_CLOUD_DIRTY_V1';
+        const CLOUD_LAST_ERROR_KEY = 'SASD_CLOUD_LAST_ERROR_V1';
+        let cloudSaveTimer = null;
+        let cloudPushInProgress = false;
         let trainees = [];
         let selectedTraineeIds = new Set();
         let editingTraineeId = null;
@@ -1648,6 +1716,37 @@
         const PAGE_SIZE = 25;
         let currentPage = 1;
 
+
+        function writeLocalRecoverySnapshot(records, reason = 'safe-copy') {
+            if (!Array.isArray(records) || records.length === 0) return false;
+            try {
+                const payload = {
+                    app: 'SASD Trainee Registration System',
+                    recoveryVersion: 1,
+                    reason,
+                    createdAt: new Date().toISOString(),
+                    recordCount: records.length,
+                    trainees: records
+                };
+                localStorage.setItem(LOCAL_RECOVERY_KEY, JSON.stringify(payload));
+                return true;
+            } catch (e) {
+                console.warn('تعذر إنشاء نسخة الاسترداد الداخلية', e);
+                return false;
+            }
+        }
+
+        function readLocalRecoverySnapshot() {
+            try {
+                const raw = localStorage.getItem(LOCAL_RECOVERY_KEY);
+                if (!raw) return [];
+                const parsed = JSON.parse(raw);
+                const records = Array.isArray(parsed) ? parsed : parsed.trainees;
+                return Array.isArray(records) ? records.filter(t => t && typeof t === 'object' && (t.id || t.fullName || t.fileNo)) : [];
+            } catch (e) {
+                return [];
+            }
+        }
 
         // لا توجد بيانات تجريبية مضمّنة؛ يبدأ النظام فارغًا عند عدم وجود بيانات محفوظة.
 
@@ -1662,9 +1761,71 @@
             updateSortIndicators();
             filterTrainees();
             updateStats();
+            refreshDataSafetyStatus();
+
             // إذا كان هذا الحاسوب قد سجل الدخول سابقاً، اجلب أحدث نسخة من Supabase تلقائياً.
+            // لا نستخدم روابط البريد أو OTP.
             setTimeout(() => autoPullCloudOnStartup(), 250);
         };
+
+
+        async function handleSupabaseAuthCallback() {
+            const cfg = getEffectiveCloudSettings();
+            if (!cfg.url || !cfg.key) return;
+
+            try {
+                const hash = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
+                const query = new URLSearchParams(window.location.search || '');
+                const accessToken = hash.get('access_token');
+                const refreshToken = hash.get('refresh_token');
+                const expiresIn = hash.get('expires_in');
+                const tokenHash = query.get('token_hash');
+                const tokenType = query.get('type') || 'email';
+
+                if (accessToken) {
+                    const payload = decodeJwtPayload(accessToken);
+                    const session = {
+                        access_token: accessToken,
+                        refresh_token: refreshToken || '',
+                        user: { id: payload?.sub || '', email: payload?.email || cfg.email || '' },
+                        expires_in: expiresIn ? Number(expiresIn) : undefined
+                    };
+                    if (session.user.id) {
+                        localStorage.setItem('SASD_CLOUD_SESSION_V1', JSON.stringify(session));
+                        document.getElementById('cloud_email').value = session.user.email || cfg.email || '';
+                        document.getElementById('cloud_status').textContent = `تم تسجيل الدخول تلقائيًا من رابط البريد: ${session.user.email || ''}`;
+                        history.replaceState({}, document.title, window.location.pathname + window.location.search);
+                        showToast('تم تسجيل الدخول من رابط البريد بنجاح');
+                        await syncCloudAfterLogin();
+                        return;
+                    }
+                }
+
+                // بعض قوالب Supabase تعيد token_hash في عنوان الصفحة بدلاً من الجلسة مباشرة.
+                if (tokenHash) {
+                    const r = await fetch(`${cfg.url}/auth/v1/verify`, {
+                        method: 'POST',
+                        headers: { 'apikey': cfg.key, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ token_hash: tokenHash, type: tokenType })
+                    });
+                    const data = await r.json().catch(() => ({}));
+                    if (r.ok && data.access_token) {
+                        const session = {
+                            access_token: data.access_token,
+                            refresh_token: data.refresh_token || '',
+                            user: data.user || { email: cfg.email || '' }
+                        };
+                        localStorage.setItem('SASD_CLOUD_SESSION_V1', JSON.stringify(session));
+                        document.getElementById('cloud_status').textContent = `تم تسجيل الدخول تلقائيًا من رابط البريد: ${session.user?.email || cfg.email || ''}`;
+                        history.replaceState({}, document.title, window.location.pathname);
+                        showToast('تم تسجيل الدخول من رابط البريد بنجاح');
+                        await syncCloudAfterLogin();
+                    }
+                }
+            } catch (e) {
+                console.warn('Supabase auth callback skipped', e);
+            }
+        }
 
 
         function normalizeDuplicateFileNumbers() {
@@ -1700,24 +1861,39 @@
 
 
         function loadTrainees() {
-            // IMPORTANT: On every startup, load ONLY the current SASD storage key.
-            // Do NOT scan or merge any legacy/localStorage keys. This prevents
-            // old/demo records from being reintroduced after a refresh.
+            // اقرأ المفتاح الحالي فقط. إذا كان مفقودًا أو تالفًا، جرّب نسخة الاسترداد الداخلية قبل إنشاء أي بيانات فارغة.
+            let raw = null;
+            let primaryValid = false;
             let currentRecords = [];
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                const parsed = raw ? JSON.parse(raw) : [];
-                if (Array.isArray(parsed)) {
-                    currentRecords = parsed.filter(t => t && typeof t === 'object' && (t.fullName || t.fileNo || t.id));
+            let restoredFromRecovery = false;
+            try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+
+            if (raw !== null) {
+                try {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) {
+                        primaryValid = true;
+                        currentRecords = parsed.filter(t => t && typeof t === 'object' && (t.fullName || t.fileNo || t.id));
+                    } else {
+                        throw new Error('المخزن الحالي ليس قائمة سجلات');
+                    }
+                } catch (e) {
+                    // احتفظ بالنص التالف نفسه قبل أي محاولة إصلاح.
+                    try { localStorage.setItem(CORRUPT_STORAGE_KEY, raw); } catch (_) {}
+                    console.warn('تعذر قراءة البيانات المحلية الأساسية؛ ستتم محاولة الاسترداد.', e);
                 }
-            } catch (e) {
-                currentRecords = [];
             }
 
+            const recoveryRecords = readLocalRecoverySnapshot();
+            if ((!primaryValid || raw === null) && recoveryRecords.length) {
+                currentRecords = recoveryRecords;
+                restoredFromRecovery = true;
+            } else if (primaryValid && currentRecords.length) {
+                // أول نسخة استرداد من البيانات الحالية قبل أي تنظيف/تعديل آلي.
+                writeLocalRecoverySnapshot(currentRecords, 'startup-last-good');
+            }
 
-            // These are the two known unwanted demo records from older versions.
-            // They are never recreated; if they still exist in the current data,
-            // remove only these exact demo records and preserve every other record.
+            // هذه السجلات التجريبية القديمة كانت غير مرغوبة وفق الإعدادات السابقة؛ احتفظنا بنسخة داخلية من البيانات قبل تطبيق هذا الترشيح.
             const demoIds = new Set(['SASD-2026-001', 'SASD-2026-002']);
             const demoNames = new Set(['محمد خالد العبدالله', 'مريم يوسف الحسين']);
             trainees = currentRecords
@@ -1725,28 +1901,76 @@
                 .map(t => ({ ...t, batchNo: t.batchNo == null ? '' : String(t.batchNo) }));
 
             const numbersFixed = normalizeDuplicateFileNumbers();
-            if (numbersFixed) {
-                console.info('تم إصلاح أرقام الملفات المكررة تلقائيًا دون حذف السجلات.');
+            if (numbersFixed) console.info('تم إصلاح أرقام الملفات المكررة تلقائيًا دون حذف السجلات.');
+
+            // لا تستبدل بيانات تالفة قبل حفظ نصها ومحاولة الاسترداد؛ احتفظ بما أمكن من السجلات القابلة للقراءة.
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(trainees)); } catch (e) { console.error('تعذر كتابة السجلات المحلية', e); }
+            if (restoredFromRecovery) {
+                showToast(`تم استرداد ${trainees.length} سجلًا من نسخة الاسترداد الداخلية. نزّل نسخة JSON خارجية الآن.`);
             }
-
-
-            // Persist only the cleaned current set. No records are generated here.
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(trainees));
-            } catch (e) {}
         }
 
 
-        function saveToStorage() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(trainees));
-            updateStats();
-            // مزامنة صامتة مع Supabase عند توفر إعدادات وجلسة دخول.
-            // لا تمنع الحفظ المحلي إذا تعذر الاتصال.
-            setTimeout(() => {
-                if (getEffectiveCloudSettings().url && getEffectiveCloudSettings().key && getCloudSession()?.access_token) {
-                    pushToCloud(true);
+        function markCloudDirty(reason = 'local-change') {
+            try {
+                localStorage.setItem(CLOUD_DIRTY_KEY, JSON.stringify({ dirty: true, reason, changedAt: new Date().toISOString(), recordCount: trainees.length }));
+            } catch (e) { console.warn('تعذر تسجيل حالة انتظار المزامنة', e); }
+        }
+
+        function getCloudDirtyState() {
+            try { return JSON.parse(localStorage.getItem(CLOUD_DIRTY_KEY) || 'null'); }
+            catch { return null; }
+        }
+
+        function clearCloudDirtyState() {
+            try { localStorage.removeItem(CLOUD_DIRTY_KEY); localStorage.removeItem(CLOUD_LAST_ERROR_KEY); }
+            catch (e) { console.warn('تعذر تحديث حالة المزامنة', e); }
+        }
+
+        function scheduleAutomaticCloudSave() {
+            if (cloudSaveTimer) clearTimeout(cloudSaveTimer);
+            cloudSaveTimer = setTimeout(async () => {
+                cloudSaveTimer = null;
+                const cfg = getEffectiveCloudSettings();
+                const session = await ensureCloudSession();
+                if (!cfg.url || !cfg.key || !session?.access_token || !session?.user?.id) {
+                    refreshDataSafetyStatus();
+                    return;
                 }
-            }, 0);
+                const ok = await pushToCloud(true);
+                if (!ok) {
+                    refreshDataSafetyStatus();
+                    const status = document.getElementById('cloud_status');
+                    if (status) status.textContent = 'تعذّر حفظ التعديلات في قاعدة البيانات. بقيت نسخة الأمان المحلية محفوظة؛ افتح إعدادات قاعدة البيانات لمعرفة السبب ثم أعد المحاولة.';
+                }
+            }, 900);
+        }
+
+        function saveToStorage() {
+            try {
+                // نسخة أمان محلية: لا تُعد المصدر الأساسي بعد نجاح المزامنة، لكنها تمنع ضياع العمل عند انقطاع الاتصال.
+                const oldRaw = localStorage.getItem(STORAGE_KEY);
+                if (oldRaw) {
+                    try {
+                        const oldParsed = JSON.parse(oldRaw);
+                        if (Array.isArray(oldParsed) && oldParsed.length) writeLocalRecoverySnapshot(oldParsed, 'before-save');
+                    } catch (e) {
+                        try { localStorage.setItem(CORRUPT_STORAGE_KEY, oldRaw); } catch (_) {}
+                    }
+                } else if (trainees.length && !readLocalRecoverySnapshot().length) {
+                    writeLocalRecoverySnapshot(trainees, 'before-first-save');
+                }
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(trainees));
+                markCloudDirty('record-change');
+            } catch (e) {
+                console.error('تعذر حفظ نسخة الأمان المحلية', e);
+                showToast('تحذير: تعذر حفظ نسخة الأمان؛ نزّل نسخة JSON قبل متابعة العمل.');
+                return;
+            }
+            updateStats();
+            refreshDataSafetyStatus();
+            // رفع تلقائي مجمّع لكل التغييرات؛ لا يُزال أي سجل من السحابة.
+            scheduleAutomaticCloudSave();
         }
 
 
@@ -1796,17 +2020,55 @@
 
 
         function generateAutoFileNo() {
-            // Always continue from the highest existing file number.
-            // This prevents a missing number (e.g. 39) from being reused when
-            // there are already 41 records, while preserving all existing records.
-            let maxIndex = 0;
-            for (const t of trainees) {
+            // رقم المستفيد الجديد يعتمد على عدد السجلات المحمّلة + 1، وليس على أعلى رقم قديم.
+            // عند وجود 100 سجل وبعد توحيد الترقيم يكون الرقم التالي SASD-101. لا تغيّر هذه الدالة أرقام السجلات القديمة.
+            const baseIndex = trainees.length + 1;
+            let nextIndex = baseIndex;
+
+            // حماية إضافية: إذا صادف أن الرقم الناتج مستخدم فعلاً،
+            // ننتقل إلى أول رقم حر بعده حتى لا يحدث تكرار.
+            const used = new Set(trainees.map(t => {
                 const m = String(t.fileNo || '').match(/(?:SASD-)?(\d+)$/i);
-                if (m) maxIndex = Math.max(maxIndex, parseInt(m[1], 10));
-            }
-            const nextIndex = maxIndex + 1;
+                return m ? parseInt(m[1], 10) : null;
+            }).filter(Number.isFinite));
+
+            while (used.has(nextIndex)) nextIndex++;
+
             const formatted = 'SASD-' + String(nextIndex).padStart(3, '0');
-            document.getElementById('form_file_no').value = formatted;
+            const field = document.getElementById('form_file_no');
+            if (field) field.value = formatted;
+        }
+
+
+        function renumberAllTrainees() {
+            const count = trainees.length;
+            if (!count) {
+                showToast('لا توجد سجلات محمّلة لإعادة ترقيمها. تأكد أولاً من تحميل سجلاتك أو تسجيل الدخول إلى السحابة.');
+                return;
+            }
+            const ok = confirm(`سيتم تنزيل نسخة احتياطية أولاً، ثم إعادة ترقيم جميع السجلات وعددها ${count} بالتسلسل من SASD-001 إلى SASD-${String(count).padStart(3, '0')}، دون تغيير معرّفات السجلات أو حذف بياناتها. هل تريد المتابعة؟`);
+            if (!ok) return;
+
+            // نسختان قبل التغيير: ملف خارجي قابل للاسترداد ونسخة احتياطية داخلية.
+            writeLocalRecoverySnapshot(trainees, 'before-sequential-renumber');
+            backupData('قبل_إعادة_الترقيم');
+
+            const ordered = [...trainees].sort((a, b) => {
+                const an = parseInt(String(a.fileNo || '').replace(/\D/g, ''), 10);
+                const bn = parseInt(String(b.fileNo || '').replace(/\D/g, ''), 10);
+                const aValid = Number.isFinite(an), bValid = Number.isFinite(bn);
+                if (aValid && bValid && an !== bn) return an - bn;
+                if (aValid !== bValid) return aValid ? -1 : 1;
+                return String(a.fullName || '').localeCompare(String(b.fullName || ''), 'ar', { sensitivity: 'base' });
+            });
+
+            ordered.forEach((t, index) => { t.fileNo = 'SASD-' + String(index + 1).padStart(3, '0'); });
+            trainees = ordered;
+            saveToStorage();
+            generateAutoFileNo();
+            currentPage = 1;
+            filterTrainees();
+            showToast(`تمت إعادة ترقيم ${count} مستفيد بالتسلسل من SASD-001 إلى SASD-${String(count).padStart(3, '0')} دون حذف السجلات.`);
         }
 
 
@@ -2150,7 +2412,7 @@
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-slate-50 transition border-b border-slate-100 text-xs';
                 let ageStr = '---';
-                if (t.dob) { const by = new Date(t.dob).getFullYear(); ageStr = (new Date().getFullYear() - by) + ' سنة'; }
+                if (t.dob) { const exactAge = getAgeNumber(t); ageStr = exactAge >= 0 ? (exactAge + ' سنة') : '---'; }
 
 
                 const professionHtml = enrollments.map((e, index) => {
@@ -2313,6 +2575,12 @@
             const t = trainees.find(x => x.id === traineeId);
             if (!t) return;
 
+            // Reuse the exact SASD logo already embedded in the system header.
+            const certificateLogo = document.getElementById('certificate_print_logo');
+            const existingHeaderLogo = document.querySelector('img[alt="شعار الجمعية السورية للدراسات والتطوير SASD"]');
+            if (certificateLogo && existingHeaderLogo) {
+                certificateLogo.src = existingHeaderLogo.currentSrc || existingHeaderLogo.src;
+            }
 
             const title = document.getElementById('certificate_title').value.trim() || 'شهادة تدريب مهني';
             const certNo = document.getElementById('certificate_no').value.trim() || `SASD-CERT-${t.fileNo || t.id}-${new Date().getFullYear()}`;
@@ -2653,11 +2921,23 @@
         }
 
 
+        function normalizeDecisionForFilter(value) {
+            const decision = String(value || '').trim();
+            if (['قبول وتسكين', 'قبول', 'مقبول', 'قبول وتسكين في المسار المهني'].includes(decision)) return 'قبول وتسكين';
+            if (['تأجيل القبول', 'مؤجل', 'مؤجل القبول', 'تأجيل'].includes(decision)) return 'تأجيل القبول';
+            if (!decision || ['قيد التقييم', 'مسوّدة غير مثبّتة', 'مسودة غير مثبتة'].includes(decision)) return 'قيد التقييم';
+            return decision;
+        }
+
+
         function getFilteredTrainees() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
             const phoneFilter = document.getElementById('filter-phone').value.trim();
+            const genderFilter = document.getElementById('filter-gender')?.value || '';
+            const ageFilter = document.getElementById('filter-age')?.value || '';
             const pathFilter = document.getElementById('filter-path').value;
             const batchFilter = document.getElementById('filter-batch').value;
+            const decisionFilter = document.getElementById('filter-decision')?.value || '';
 
 
             return trainees.map(t => {
@@ -2665,11 +2945,17 @@
                 const matching = all.filter(e => {
                     const matchPath = !pathFilter || e.profession === pathFilter;
                     const matchBatch = !batchFilter || (e.batchNo || 'بدون دفعة') === batchFilter;
-                    return matchPath && matchBatch;
+                    const matchDecision = !decisionFilter || normalizeDecisionForFilter(e.decision || t.decision) === decisionFilter;
+                    return matchPath && matchBatch && matchDecision;
                 });
                 const matchQuery = !query || String(t.fullName||'').toLowerCase().includes(query) || String(t.fileNo||'').toLowerCase().includes(query) || String(t.guardianPhone||'').includes(query);
                 const matchPhone = !phoneFilter || String(t.traineePhone||'').includes(phoneFilter);
-                if (!matchQuery || !matchPhone || matching.length === 0) return null;
+                const normalizedGender = normalizeGenderForFilter(t.gender);
+                const wantedGender = normalizeGenderForFilter(genderFilter);
+                const matchGender = !genderFilter || normalizedGender === wantedGender;
+                const age = getAgeNumber(t);
+                const matchAge = !ageFilter || (ageFilter === 'under18' && age >= 0 && age < 18) || (ageFilter === 'exact18' && age === 18) || (ageFilter === 'over18' && age > 18);
+                if (!matchQuery || !matchPhone || !matchGender || !matchAge || matching.length === 0) return null;
                 const first = matching[0];
                 return {...t, __matchingEnrollments: matching, __profession:first?.profession || '', __batchNo:first?.batchNo || '', __decision:first?.decision || t.decision || 'قيد التقييم', __parentId:t.id};
             }).filter(Boolean);
@@ -2699,14 +2985,24 @@
 
 
         function getAgeNumber(t) {
-            if (!t.dob) return -1;
-            const d = new Date(t.dob);
+            if (!t?.dob) return -1;
+            let d;
+            const match = String(t.dob).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            if (match) d = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+            else d = new Date(t.dob);
             if (Number.isNaN(d.getTime())) return -1;
             const now = new Date();
             let age = now.getFullYear() - d.getFullYear();
             const monthDiff = now.getMonth() - d.getMonth();
             if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < d.getDate())) age--;
-            return age;
+            return age >= 0 ? age : -1;
+        }
+
+        function normalizeGenderForFilter(value) {
+            const v = String(value || '').trim().toLowerCase().replace(/[\u064B-\u065F\u0670]/g, '').replace(/[أإآ]/g, 'ا');
+            if (v === 'ذكر' || v === 'ذكرى' || v === 'male') return 'ذكر';
+            if (v === 'انثى' || v === 'انثي' || v === 'female') return 'أنثى';
+            return v;
         }
 
 
@@ -2759,68 +3055,79 @@
 
 
         function renderPagination(total, totalPages) {
-            const info = document.getElementById('pagination-info');
-            const controls = document.getElementById('pagination-controls');
-            if (!info || !controls) return;
-
+            const paginationViews = [
+                {
+                    info: document.getElementById('pagination-info-top'),
+                    controls: document.getElementById('pagination-controls-top')
+                },
+                {
+                    info: document.getElementById('pagination-info'),
+                    controls: document.getElementById('pagination-controls')
+                }
+            ].filter(view => view.info || view.controls);
 
             if (total === 0) {
-                info.textContent = 'لا توجد نتائج';
-                controls.innerHTML = '';
+                paginationViews.forEach(view => {
+                    if (view.info) view.info.textContent = 'لا توجد نتائج';
+                    if (view.controls) view.controls.innerHTML = '';
+                });
                 return;
             }
 
-
             const start = (currentPage - 1) * PAGE_SIZE + 1;
             const end = Math.min(currentPage * PAGE_SIZE, total);
-            info.textContent = `عرض ${start}–${end} من أصل ${total} سجل`;
-
-
+            const infoText = `عرض ${start}–${end} من أصل ${total} سجل — الصفحة ${currentPage} من ${totalPages}`;
             const btnBase = 'min-w-[36px] h-9 px-2 rounded-lg text-xs font-bold border transition flex items-center justify-center';
+
             const makeButton = (label, page, disabled = false, active = false) => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = btnBase + (active ? ' bg-emerald-600 text-white border-emerald-600' : ' bg-white text-slate-700 border-slate-300 hover:bg-emerald-50 hover:border-emerald-300') + (disabled ? ' opacity-40 cursor-not-allowed hover:bg-white hover:border-slate-300' : '');
                 btn.textContent = label;
                 btn.disabled = disabled;
-                if (!disabled) btn.onclick = () => { currentPage = page; filterTrainees(false); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+                if (!disabled) btn.onclick = () => {
+                    currentPage = page;
+                    filterTrainees(false);
+                    const topPagination = document.getElementById('trainees-pagination-top');
+                    if (topPagination) topPagination.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                };
                 return btn;
             };
 
+            paginationViews.forEach(view => {
+                if (view.info) view.info.textContent = infoText;
+                const controls = view.controls;
+                if (!controls) return;
+                controls.innerHTML = '';
+                controls.appendChild(makeButton('السابق', currentPage - 1, currentPage === 1));
 
-            controls.innerHTML = '';
-            controls.appendChild(makeButton('السابق', currentPage - 1, currentPage === 1));
-
-
-            let pages = [];
-            if (totalPages <= 7) {
-                pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-            } else {
-                pages = [1];
-                const from = Math.max(2, currentPage - 1);
-                const to = Math.min(totalPages - 1, currentPage + 1);
-                if (from > 2) pages.push('…');
-                for (let p = from; p <= to; p++) pages.push(p);
-                if (to < totalPages - 1) pages.push('…');
-                pages.push(totalPages);
-            }
-
-
-            pages.forEach(page => {
-                if (page === '…') {
-                    const span = document.createElement('span');
-                    span.className = 'px-1 text-slate-400 font-bold';
-                    span.textContent = '…';
-                    controls.appendChild(span);
+                let pages = [];
+                if (totalPages <= 7) {
+                    pages = Array.from({ length: totalPages }, (_, i) => i + 1);
                 } else {
-                    controls.appendChild(makeButton(String(page), page, false, page === currentPage));
+                    pages = [1];
+                    const from = Math.max(2, currentPage - 1);
+                    const to = Math.min(totalPages - 1, currentPage + 1);
+                    if (from > 2) pages.push('…');
+                    for (let page = from; page <= to; page++) pages.push(page);
+                    if (to < totalPages - 1) pages.push('…');
+                    pages.push(totalPages);
                 }
+
+                pages.forEach(page => {
+                    if (page === '…') {
+                        const span = document.createElement('span');
+                        span.className = 'px-1 text-slate-400 font-bold';
+                        span.textContent = '…';
+                        controls.appendChild(span);
+                    } else {
+                        controls.appendChild(makeButton(String(page), page, false, page === currentPage));
+                    }
+                });
+
+                controls.appendChild(makeButton('التالي', currentPage + 1, currentPage === totalPages));
             });
-
-
-            controls.appendChild(makeButton('التالي', currentPage + 1, currentPage === totalPages));
         }
-
 
         function toggleTraineeSelection(id, checked) {
             if (checked) selectedTraineeIds.add(id);
@@ -2892,6 +3199,7 @@
             document.getElementById('stat-pending').innerText = pending;
             document.getElementById('stat-motor').innerText = motor;
             document.getElementById('badge-count').innerText = total;
+            refreshDataSafetyStatus();
         }
 
 
@@ -2989,88 +3297,158 @@
         }
 
 
-        // Printable beneficiary registration form (registration + health/social data only; no committee evaluation).
+        // طباعة الاستمارة الممتلئة بشكل مستقل وموثوق في نافذة طباعة جديدة.
         function printTraineeReport(id) {
             const t = trainees.find(x => x.id === id);
-            if (!t) return;
+            if (!t) {
+                showToast('لم يتم العثور على سجل المستفيد للطباعة');
+                return;
+            }
 
-
-            document.getElementById('p_file_no').innerText = t.fileNo || 'بدون رقم';
-            document.getElementById('p_app_date').innerText = t.appDate || '---';
-            document.getElementById('p_status_badge').innerText = 'استمارة تسجيل مستفيد';
-            document.getElementById('p_evaluator_name_sig').innerText = '..................................';
-
-
-            const printContent = document.getElementById('print-content');
-            const assistStr = Array.isArray(t.assistiveDevices) ? t.assistiveDevices.join(' ، ') : (t.assistiveDevices || 'لا يوجد');
-            const chronicStr = Array.isArray(t.chronicDiseases) ? t.chronicDiseases.join(' ، ') : (t.chronicDiseases || 'لا يوجد');
+            const esc = (value) => String(value ?? '---')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+            const list = (v, fallback='---') => Array.isArray(v) && v.length ? v.join(' ، ') : (v || fallback);
+            const requested = list(t.requestedProfessions, t.requestedProfession || 'غير محدد');
+            const proposed = list(t.proposedPaths, t.proposedPath || 'غير محدد');
+            const assistStr = list(t.assistiveDevices, 'لا يوجد');
+            const chronicStr = list(t.chronicDiseases, 'لا يوجد');
             const otherHome = t.otherDisability === 'نعم' ? (t.otherDisabilityDetail || 'نعم، توجد حالات إعاقة أخرى في المنزل') : 'لا يوجد';
             const meds = t.regularMeds === 'نعم' ? (t.medsDetail || 'نعم') : 'لا';
-            const requested = (Array.isArray(t.requestedProfessions) && t.requestedProfessions.length ? t.requestedProfessions : [t.requestedProfession || 'غير محدد']).join(' ، ');
-            const proposed = (Array.isArray(t.proposedPaths) && t.proposedPaths.length ? t.proposedPaths : [t.proposedPath || 'غير محدد']).join(' ، ');
+            const marital = t.maritalStatus || '---';
+            const children = marital === 'أعزب / عزباء' ? 'غير منطبق' :
+                (t.childrenStatus === 'نعم' ? `نعم، العدد: ${t.childrenCount || '---'}` :
+                (t.childrenStatus === 'لا' ? 'لا يوجد أولاد' : '---'));
             const batch = t.batchNo || 'غير محدد';
+            const vta = t.vocationalTeamAssessment || {};
 
+            const printHtml = `
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>استمارة تسجيل مستفيد - ${esc(t.fileNo || '')}</title>
+<style>
+  @page { size: A4 portrait; margin: 10mm; }
+  * { box-sizing: border-box; }
+  body { font-family: Arial, Tahoma, sans-serif; color:#111827; margin:0; font-size:11pt; line-height:1.6; background:#fff; }
+  .sheet { width:100%; max-width:190mm; margin:0 auto; }
+  .header { display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #111827; padding-bottom:10px; margin-bottom:12px; }
+  .brand { text-align:right; }
+  .brand h1 { margin:0; font-size:17pt; font-weight:800; }
+  .brand p { margin:2px 0 0; font-size:9pt; font-weight:700; }
+  .meta { text-align:left; font-size:9pt; }
+  .title { text-align:center; font-size:14pt; font-weight:800; text-decoration:underline; margin:10px 0 14px; }
+  .section { border:1px solid #94a3b8; border-radius:8px; padding:9px 11px; margin-bottom:10px; page-break-inside:avoid; }
+  .section h2 { font-size:11.5pt; margin:0 0 7px; padding-bottom:4px; border-bottom:1px solid #cbd5e1; }
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:5px 14px; }
+  .wide { grid-column:span 2; }
+  .full { grid-column:1 / -1; }
+  .item { min-width:0; }
+  .label { font-weight:700; }
+  .value { overflow-wrap:anywhere; }
+  .footer { margin-top:16px; border-top:1px solid #94a3b8; padding-top:12px; display:grid; grid-template-columns:repeat(3,1fr); gap:12px; text-align:center; font-size:9pt; }
+  .sig { margin-top:22px; border-top:1px dashed #64748b; padding-top:4px; }
+  .print-bar { text-align:center; margin:12px 0; }
+  .note { font-size:8.5pt; color:#475569; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="header">
+    <div class="brand">
+      <h1>الجمعية السورية للدراسات والتطوير (SASD)</h1>
+      <p>مركز التنمية المجتمعية للتأهيل والتدريب — معرتمصرين</p>
+      <p>سجل تسجيل المستفيد والبيانات الأساسية</p>
+    </div>
+    <div class="meta">
+      <div><b>رقم الملف:</b> ${esc(t.fileNo || 'بدون رقم')}</div>
+      <div><b>تاريخ الطلب:</b> ${esc(t.appDate || '---')}</div>
+      <div><b>حالة الاستمارة:</b> استمارة تسجيل مستفيد</div>
+    </div>
+  </div>
 
-            printContent.innerHTML = `
-                <div class="border border-slate-400 p-3 rounded-lg space-y-2">
-                    <h3 class="font-black text-slate-900 border-b-2 border-slate-300 pb-1">أولاً: البيانات الشخصية والاجتماعية</h3>
-                    <div class="grid grid-cols-3 gap-x-3 gap-y-1.5">
-                        <p><strong>اسم المستفيد:</strong> ${t.fullName || '---'}</p>
-                        <p><strong>اسم الأم:</strong> ${t.motherName || '---'}</p>
-                        <p><strong>الجنس:</strong> ${t.gender || '---'}</p>
-                        <p><strong>الوضع الاجتماعي:</strong> ${t.maritalStatus || '---'}</p>
-                        <p><strong>الأولاد:</strong> ${t.maritalStatus === 'أعزب / عزباء' ? 'غير منطبق' : (t.childrenStatus === 'نعم' ? `نعم، العدد: ${t.childrenCount || '---'}` : (t.childrenStatus === 'لا' ? 'لا يوجد أولاد' : '---'))}</p>
-                        <p><strong>تاريخ الميلاد:</strong> ${t.dob || '---'}</p>
-                        <p><strong>الرقم الوطني:</strong> ${t.nationalId || '---'}</p>
-                        <p><strong>هاتف المستفيد:</strong> ${t.traineePhone || '---'}</p>
-                        <p class="col-span-2"><strong>العنوان:</strong> ${t.address || '---'}</p>
-                        <p><strong>المستوى التعليمي:</strong> ${t.educationLevel || '---'}</p>
-                        <p><strong>ولي الأمر:</strong> ${t.guardianName || '---'}</p>
-                        <p><strong>صلة القرابة:</strong> ${t.guardianRelation || '---'}</p>
-                        <p><strong>هاتف ولي الأمر:</strong> ${t.guardianPhone || '---'}</p>
-                        <p class="col-span-3"><strong>مهنة التسجيل المطلوبة:</strong> ${requested}</p>
-                    </div>
-                </div>
+  <div class="title">استمارة تسجيل مستفيد - مركز التنمية المجتمعية في معرتمصرين</div>
 
+  <div class="section">
+    <h2>أولاً: البيانات الشخصية والاجتماعية</h2>
+    <div class="grid">
+      <div class="item"><span class="label">اسم المستفيد:</span> <span class="value">${esc(t.fullName)}</span></div>
+      <div class="item"><span class="label">اسم الأم:</span> <span class="value">${esc(t.motherName)}</span></div>
+      <div class="item"><span class="label">الجنس:</span> <span class="value">${esc(t.gender)}</span></div>
+      <div class="item"><span class="label">تاريخ الميلاد:</span> <span class="value">${esc(t.dob)}</span></div>
+      <div class="item"><span class="label">الوضع الاجتماعي:</span> <span class="value">${esc(marital)}</span></div>
+      <div class="item"><span class="label">الأولاد:</span> <span class="value">${esc(children)}</span></div>
+      <div class="item"><span class="label">الرقم الوطني:</span> <span class="value">${esc(t.nationalId || '---')}</span></div>
+      <div class="item"><span class="label">هاتف المستفيد:</span> <span class="value">${esc(t.traineePhone || '---')}</span></div>
+      <div class="item wide"><span class="label">مكان السكن / العنوان:</span> <span class="value">${esc(t.address || '---')}</span></div>
+      <div class="item"><span class="label">المستوى التعليمي:</span> <span class="value">${esc(t.educationLevel || '---')}</span></div>
+      <div class="item"><span class="label">ولي الأمر:</span> <span class="value">${esc(t.guardianName || '---')}</span></div>
+      <div class="item"><span class="label">صلة القرابة:</span> <span class="value">${esc(t.guardianRelation || '---')}</span></div>
+      <div class="item"><span class="label">هاتف ولي الأمر:</span> <span class="value">${esc(t.guardianPhone || '---')}</span></div>
+      <div class="item full"><span class="label">مهن التسجيل المطلوبة:</span> <span class="value">${esc(requested)}</span></div>
+    </div>
+  </div>
 
-                <div class="border border-slate-400 p-3 rounded-lg space-y-2">
-                    <h3 class="font-black text-slate-900 border-b-2 border-slate-300 pb-1">ثانياً: البيانات الصحية وحالات الإعاقة</h3>
-                    <div class="grid grid-cols-3 gap-x-3 gap-y-1.5">
-                        <p class="col-span-2"><strong>نوع الإعاقة الرئيسية:</strong> ${t.disabilityType || '---'}</p>
-                        <p><strong>حالات إعاقة أخرى في المنزل:</strong> ${otherHome}</p>
-                        <p class="col-span-3"><strong>تفاصيل حالات الإعاقة الأخرى في المنزل:</strong> ${t.otherDisabilityDetail || '---'}</p>
-                        <p class="col-span-3"><strong>التشخيص الطبي / وصف الحالة:</strong> ${t.diagnosis || '---'}</p>
-                        <p class="col-span-3"><strong>الأجهزة المساعدة:</strong> ${assistStr}</p>
-                        <p class="col-span-3"><strong>الأمراض المزمنة:</strong> ${chronicStr}</p>
-                        <p><strong>أدوية منتظمة:</strong> ${meds}</p>
-                        <p class="col-span-2"><strong>ملاحظات صحية خاصة:</strong> ${t.healthNotes || '---'}</p>
-                        ${t.medsDetail ? `<p class="col-span-3"><strong>تفاصيل الأدوية:</strong> ${t.medsDetail}</p>` : ''}
-                    </div>
-                </div>
+  <div class="section">
+    <h2>ثانياً: البيانات الصحية وحالات الإعاقة</h2>
+    <div class="grid">
+      <div class="item"><span class="label">نوع الإعاقة الرئيسية:</span> <span class="value">${esc(t.disabilityType || '---')}</span></div>
+      <div class="item"><span class="label">حالات إعاقة أخرى في المنزل:</span> <span class="value">${esc(otherHome)}</span></div>
+      <div class="item"><span class="label">الأجهزة المساعدة:</span> <span class="value">${esc(assistStr)}</span></div>
+      <div class="item wide"><span class="label">التشخيص الطبي / وصف الحالة:</span> <span class="value">${esc(t.diagnosis || '---')}</span></div>
+      <div class="item"><span class="label">الأمراض المزمنة:</span> <span class="value">${esc(chronicStr)}</span></div>
+      <div class="item"><span class="label">أدوية منتظمة:</span> <span class="value">${esc(meds)}</span></div>
+      <div class="item full"><span class="label">تفاصيل حالات الإعاقة الأخرى في المنزل:</span> <span class="value">${esc(t.otherDisabilityDetail || '---')}</span></div>
+      <div class="item full"><span class="label">ملاحظات صحية خاصة:</span> <span class="value">${esc(t.healthNotes || '---')}</span></div>
+    </div>
+  </div>
 
+  <div class="section">
+    <h2>ثالثاً: بيانات التدريب والتسجيل</h2>
+    <div class="grid">
+      <div class="item wide"><span class="label">المسار / المهن المطلوبة:</span> <span class="value">${esc(requested)}</span></div>
+      <div class="item"><span class="label">رقم الدفعة:</span> <span class="value">${esc(batch)}</span></div>
+      <div class="item full"><span class="label">المسارات المهنية المقترحة:</span> <span class="value">${esc(proposed)}</span></div>
+      <div class="item full"><span class="label">الخبرات أو الاهتمامات المهنية السابقة:</span> <span class="value">${esc(t.prevExp || '---')}</span></div>
+      <div class="item"><span class="label">مناسب للمهنة:</span> <span class="value">${esc(vta.professionFit || '---')}</span></div>
+      <div class="item"><span class="label">لديه وقت للالتزام:</span> <span class="value">${esc(vta.commitmentTime || '---')}</span></div>
+      <div class="item"><span class="label">لديه وسيلة نقل:</span> <span class="value">${esc(vta.transportAvailable || '---')}</span></div>
+      ${vta.transportAvailable === 'لا' ? `<div class="item full"><span class="label">وسيلة النقل / البديل:</span> <span class="value">${esc(vta.transportMethod || '---')}</span></div>` : ''}
+    </div>
+  </div>
 
-                <div class="border border-slate-400 p-3 rounded-lg space-y-2">
-                    <h3 class="font-black text-slate-900 border-b-2 border-slate-300 pb-1">ثالثاً: بيانات التدريب والتسجيل</h3>
-                    <div class="grid grid-cols-3 gap-x-3 gap-y-1.5">
-                        <p class="col-span-2"><strong>المسار / المهنة المطلوبة:</strong> ${requested}</p>
-                        <p><strong>رقم الدفعة:</strong> ${batch}</p>
-                        <p class="col-span-3"><strong>المسار المهني المسجل:</strong> ${proposed}</p>
-                        <p class="col-span-3"><strong>الخبرات أو الاهتمامات المهنية السابقة:</strong> ${t.prevExp || '---'}</p>
-                        <p class="col-span-3"><strong>فريق التدريب المهني:</strong> مناسب للمهنة: ${t.vocationalTeamAssessment?.professionFit || '---'} | وقت الالتزام: ${t.vocationalTeamAssessment?.commitmentTime || '---'} | وسيلة نقل: ${t.vocationalTeamAssessment?.transportAvailable || '---'}${t.vocationalTeamAssessment?.transportAvailable === 'لا' ? ' (' + (t.vocationalTeamAssessment?.transportMethod || '---') + ')' : ''}</p>
-                    </div>
-                </div>
+  <div class="section">
+    <h2>رابعاً: الملاحظات الإضافية</h2>
+    <div class="note">${esc(t.healthNotes || '................................................................................................................................................................................................................................................................')}</div>
+  </div>
 
+  <div class="footer">
+    <div><b>المستفيد / ولي الأمر</b><div class="sig">التوقيع</div></div>
+    <div><b>مدير مركز التنمية المجتمعية</b><div class="sig">الختم والتوقيع</div></div>
+    <div><b>معد الملف / التدقيق</b><div class="sig">التوقيع</div></div>
+  </div>
+</div>
+<div class="print-bar no-print"><button onclick="window.print()">طباعة</button></div>
+</body>
+</html>`;
 
-                <div class="border border-slate-400 p-3 rounded-lg">
-                    <h3 class="font-black text-slate-900 border-b-2 border-slate-300 pb-1 mb-2">رابعاً: ملاحظات إضافية</h3>
-                    <div class="min-h-[44px] leading-7">
-                        ${t.healthNotes || '................................................................................................................................................................'}
-                    </div>
-                </div>
-            `;
-
-
-            setTimeout(() => window.print(), 100);
+            const win = window.open('', '_blank', 'width=1000,height=800');
+            if (!win) {
+                alert('تعذر فتح نافذة الطباعة. يرجى السماح بالنوافذ المنبثقة لهذا الموقع ثم إعادة المحاولة.');
+                return;
+            }
+            win.document.open();
+            win.document.write(printHtml);
+            win.document.close();
+            win.focus();
+            setTimeout(() => {
+                win.print();
+                setTimeout(() => win.close(), 700);
+            }, 350);
         }
 
 
@@ -3142,6 +3520,7 @@
 
 
             const tempObj = {
+                id: 'SASD_PRINT_DRAFT_' + Date.now(),
                 fileNo: document.getElementById('form_file_no').value || 'SASD-DRAFT',
                 appDate: document.getElementById('form_app_date').value || new Date().toISOString().split('T')[0],
                 fullName: name,
@@ -3193,13 +3572,31 @@
 
         // Excel Export (HTML workbook compatible with Microsoft Excel)
         function getExportTrainees() {
-            // التصدير يعتمد تحديدًا على خياري المهنة/المسار والدفعة،
-            // ولا يتأثر ببحث الاسم أو رقم الهاتف حتى لا يتم استبعاد سجلات من ملف Excel بالخطأ.
-            const pathFilter = document.getElementById('filter-path').value;
-            const batchFilter = document.getElementById('filter-batch').value;
+            // التصدير يتبع جميع الفلاتر: الاسم/رقم الملف، الهاتف، الجنس، العمر، المسار، الدفعة، والقرار.
+            const query = document.getElementById('search-input')?.value.toLowerCase().trim() || '';
+            const phoneFilter = document.getElementById('filter-phone')?.value.trim() || '';
+            const genderFilter = document.getElementById('filter-gender')?.value || '';
+            const ageFilter = document.getElementById('filter-age')?.value || '';
+            const pathFilter = document.getElementById('filter-path')?.value || '';
+            const batchFilter = document.getElementById('filter-batch')?.value || '';
+            const decisionFilter = document.getElementById('filter-decision')?.value || '';
+            const wantedGender = normalizeGenderForFilter(genderFilter);
 
+            return trainees.flatMap(t => {
+                const matchQuery = !query || String(t.fullName || '').toLowerCase().includes(query) || String(t.fileNo || '').toLowerCase().includes(query) || String(t.guardianPhone || '').includes(query);
+                const matchPhone = !phoneFilter || String(t.traineePhone || '').includes(phoneFilter);
+                const matchGender = !genderFilter || normalizeGenderForFilter(t.gender) === wantedGender;
+                const age = getAgeNumber(t);
+                const matchAge = !ageFilter || (ageFilter === 'under18' && age >= 0 && age < 18) || (ageFilter === 'exact18' && age === 18) || (ageFilter === 'over18' && age > 18);
+                if (!matchQuery || !matchPhone || !matchGender || !matchAge) return [];
 
-            return trainees.flatMap(t => getTraineeEnrollments(t).filter(e => (!pathFilter || e.profession === pathFilter) && (!batchFilter || (e.batchNo || 'بدون دفعة') === batchFilter)).map(e => ({...t, requestedProfession:e.profession, proposedPath:e.profession, batchNo:e.batchNo||'', enrollmentActive:e.active, enrollmentDecision:e.decision})));
+                return getTraineeEnrollments(t).filter(e => {
+                    const matchPath = !pathFilter || e.profession === pathFilter;
+                    const matchBatch = !batchFilter || (e.batchNo || 'بدون دفعة') === batchFilter;
+                    const matchDecision = !decisionFilter || normalizeDecisionForFilter(e.decision || t.decision) === decisionFilter;
+                    return matchPath && matchBatch && matchDecision;
+                }).map(e => ({...t, requestedProfession:e.profession, proposedPath:e.profession, batchNo:e.batchNo||'', enrollmentActive:e.active, enrollmentDecision:e.decision}));
+            });
         }
 
 
@@ -3212,9 +3609,10 @@
 
             const pathFilter = document.getElementById('filter-path').value;
             const batchFilter = document.getElementById('filter-batch').value;
+            const decisionFilter = document.getElementById('filter-decision')?.value || '';
             const exportTrainees = getExportTrainees();
             if (exportTrainees.length === 0) {
-                showToast('لا توجد سجلات مطابقة للدفعة والمهنة المحددتين للتصدير');
+                showToast('لا توجد سجلات مطابقة للفلاتر المحددة للتصدير');
                 return;
             }
 
@@ -3319,16 +3717,20 @@
                 .replace(/[\\/:*?"<>|]+/g, '-')
                 .replace(/\s+/g, ' ')
                 .trim();
+            const decisionLabel = decisionFilter === 'قبول وتسكين' ? 'قبول-وتسكين'
+                : decisionFilter === 'تأجيل القبول' ? 'مؤجل'
+                : decisionFilter === 'قيد التقييم' ? 'قيد-التقييم' : 'جميع-القرارات';
             const filterLabel = [
                 batchFilter ? `الدفعة-${safePart(batchFilter)}` : 'جميع-الدفعات',
-                pathFilter ? safePart(pathFilter) : 'جميع-المسارات'
+                pathFilter ? safePart(pathFilter) : 'جميع-المسارات',
+                decisionLabel
             ].join('_');
             link.download = `سجل_المتدربين_SASD_${filterLabel}_${new Date().toISOString().split('T')[0]}.xls`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             setTimeout(() => URL.revokeObjectURL(url), 1000);
-            showToast(`تم تصدير ${exportTrainees.length} سجلًا حسب الفلاتر الحالية إلى Excel بنجاح`);
+            showToast(`تم تصدير ${exportTrainees.length} سجلًا حسب فلاتر المسار والدفعة والقرار إلى Excel بنجاح`);
         }
 
 
@@ -3340,7 +3742,7 @@
         const EMBEDDED_SUPABASE_CONFIG = {
             url: 'https://yjysevnladslxkobnchn.supabase.co',
             key: 'sb_publishable_kPRJipAD5V_QYyuLDsH-Qw_oD6U-j1S',
-            email: ''
+            email: 'sasd.m.msreen@gmail.com'
         };
 
         function getEffectiveCloudSettings() {
@@ -3353,8 +3755,9 @@
         }
 
 
-        function backupData() {
+        function backupData(namePrefix = '') {
             try {
+                writeLocalRecoverySnapshot(trainees, 'manual-download');
                 const payload = {
                     app: 'SASD Trainee Registration System',
                     backupVersion: BACKUP_VERSION,
@@ -3367,7 +3770,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `SASD_نسخة_احتياطية_${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
+                a.download = `SASD_نسخة_احتياطية${namePrefix ? '_' + namePrefix : ''}_${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
@@ -3418,6 +3821,44 @@
         }
 
 
+        function refreshDataSafetyStatus() {
+            const status = document.getElementById('data-safety-status');
+            const message = document.getElementById('data-safety-message');
+            if (!status || !message) return;
+            let session = null, lastSync = null, lastError = null, dirty = null;
+            try { session = getCloudSession(); } catch (e) {}
+            try { lastSync = JSON.parse(localStorage.getItem(CLOUD_LAST_SYNC_KEY) || 'null'); } catch (e) {}
+            try { lastError = localStorage.getItem(CLOUD_LAST_ERROR_KEY); } catch (e) {}
+            dirty = getCloudDirtyState();
+
+            const localCount = Array.isArray(trainees) ? trainees.length : 0;
+            const hasConfirmedSync = session?.user?.id && lastSync?.userId === session.user.id && lastSync?.syncedAt;
+            if (hasConfirmedSync && !dirty && Number(lastSync.recordCount) === localCount) {
+                const when = new Date(lastSync.syncedAt);
+                const whenText = Number.isNaN(when.getTime()) ? lastSync.syncedAt : when.toLocaleString('ar');
+                status.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800';
+                status.textContent = 'تم الحفظ في قاعدة البيانات';
+                message.textContent = `تأكيد آخر رفع ناجح إلى Supabase: ${whenText}. عدد السجلات المرفوعة: ${lastSync.recordCount}. قاعدة البيانات هي النسخة الأساسية بعد هذا التأكيد، ويحتفظ المتصفح بنسخة أمان مؤقتة.`;
+            } else if (session?.user?.id && dirty) {
+                status.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900';
+                status.textContent = lastError ? 'تعذّر الحفظ السحابي — يلزم إعادة المحاولة' : 'تعديلات بانتظار الحفظ في قاعدة البيانات';
+                message.textContent = `عدد السجلات الحالي ${localCount}. لا تعتبر آخر التعديلات محفوظة سحابيًا بعد. سيحاول النظام رفعها تلقائيًا؛ استخدم «رفع البيانات إلى السحابة» إذا بقيت هذه الرسالة.${lastError ? ' آخر خطأ: ' + lastError.slice(0, 220) : ''}`;
+            } else if (hasConfirmedSync && Number(lastSync.recordCount) !== localCount) {
+                status.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900';
+                status.textContent = 'عدد السجلات تغيّر ويحتاج إلى مزامنة';
+                message.textContent = `آخر رفع ناجح كان لعدد ${lastSync.recordCount} سجلًا، بينما يوجد الآن ${localCount}. ارفع البيانات إلى السحابة وأكّد نجاح العملية.`;
+            } else if (session?.user?.id) {
+                status.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900';
+                status.textContent = 'الدخول موجود؛ لم يُؤكَّد الحفظ بعد';
+                message.textContent = `يوجد ${localCount} سجلًا في نسخة العمل. اضغط «رفع البيانات إلى السحابة» مرة واحدة وانتظر تأكيد نجاح الرفع قبل اعتبار قاعدة البيانات نسخة معتمدة.`;
+            } else {
+                status.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800';
+                status.textContent = 'غير متصل — الحفظ المحلي مؤقت فقط';
+                message.textContent = `يوجد ${localCount} سجلًا في نسخة العمل، لكن لم يتأكد حفظه في Supabase. سجّل الدخول من إعدادات قاعدة البيانات؛ حتى ذلك الحين تبقى التعديلات في نسخة الأمان داخل المتصفح فقط. لا تمسح بيانات المتصفح.`;
+            }
+        }
+
+
         function getCloudSettings() {
             try { return JSON.parse(localStorage.getItem(CLOUD_SETTINGS_KEY) || '{}'); } catch { return {}; }
         }
@@ -3436,7 +3877,7 @@
             document.getElementById('cloud_key').value = cfg.key || '';
             document.getElementById('cloud_email').value = cfg.email || '';
             document.getElementById('cloud_password').value = '';
-            document.getElementById('cloud_status').textContent = session?.user?.email ? `مسجل الدخول: ${session.user.email}` : (cfg.url ? 'إعداد Supabase جاهز. على هذا الجهاز سجّل الدخول بنفس حساب Supabase لعرض البيانات المشتركة.' : 'لم يتم إعداد قاعدة البيانات بعد.');
+            document.getElementById('cloud_status').textContent = session?.user?.email ? `مسجل الدخول: ${session.user.email} — تحقّق من مؤشر حماية البيانات للتأكد من آخر رفع ناجح.` : (cfg.url ? 'إعداد Supabase جاهز. أدخل بريد الحساب وكلمة المرور لتسجيل الدخول من أي جهاز.' : 'لم يتم إعداد قاعدة البيانات بعد.');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
         }
@@ -3459,12 +3900,13 @@
             if (!key) { alert('أدخل Publishable Key (أو anon key للمشاريع القديمة).'); return; }
             localStorage.setItem(CLOUD_SETTINGS_KEY, JSON.stringify({ url, key, email }));
             document.getElementById('cloud_status').textContent = 'تم حفظ إعدادات المشروع على هذا المتصفح.';
+            refreshDataSafetyStatus();
             showToast('تم حفظ إعدادات قاعدة البيانات');
         }
 
 
-        function cloudHeaders(cfg) {
-            const session = getCloudSession();
+        function cloudHeaders(cfg, sessionOverride = null) {
+            const session = sessionOverride || getCloudSession();
             return {
                 'apikey': cfg.key,
                 'Authorization': 'Bearer ' + (session?.access_token || cfg.key),
@@ -3474,139 +3916,381 @@
         }
 
 
-        async function loginToCloud() {
-            saveCloudSettings();
+        function decodeJwtPayload(token) {
+            try {
+                const part = String(token || '').split('.')[1];
+                if (!part) return null;
+                const json = decodeURIComponent(atob(part.replace(/-/g, '+').replace(/_/g, '/')).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+                return JSON.parse(json);
+            } catch { return null; }
+        }
+
+
+        async function refreshCloudSession() {
             const cfg = getEffectiveCloudSettings();
+            const current = getCloudSession();
+            if (!cfg.url || !cfg.key || !current?.refresh_token) return null;
+            try {
+                const r = await fetch(`${cfg.url}/auth/v1/token?grant_type=refresh_token`, {
+                    method: 'POST',
+                    headers: { 'apikey': cfg.key, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refresh_token: current.refresh_token })
+                });
+                const data = await r.json();
+                if (!r.ok || !data.access_token) return null;
+                const session = { access_token: data.access_token, refresh_token: data.refresh_token || current.refresh_token, user: data.user || current.user };
+                localStorage.setItem('SASD_CLOUD_SESSION_V1', JSON.stringify(session));
+                return session;
+            } catch { return null; }
+        }
+
+
+        async function ensureCloudSession() {
+            const current = getCloudSession();
+            if (!current?.access_token) return null;
+            const payload = decodeJwtPayload(current.access_token);
+            const exp = Number(payload?.exp || 0);
+            const now = Math.floor(Date.now() / 1000);
+            if (!exp || exp > now + 90) return current;
+            return await refreshCloudSession();
+        }
+
+
+        async function cloudFetch(url, options = {}, retryOnAuth = true) {
+            const cfg = getEffectiveCloudSettings();
+            let session = await ensureCloudSession();
+            const headers = { ...(options.headers || {}) };
+            headers['apikey'] = cfg.key;
+            headers['Authorization'] = 'Bearer ' + (session?.access_token || cfg.key);
+            if (options.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
+            const response = await fetch(url, { ...options, headers });
+            if (response.status === 401 && retryOnAuth && session?.refresh_token) {
+                session = await refreshCloudSession();
+                if (session) return await cloudFetch(url, options, false);
+            }
+            return response;
+        }
+
+
+        function isEmptyRecordValue(value) {
+            return value === undefined || value === null || (typeof value === 'string' && value.trim() === '') || (Array.isArray(value) && value.length === 0);
+        }
+
+        // دمج غير حاذف: يحتفظ بكل السجلات المحلية، يضيف سجلات السحابة غير الموجودة، ويملأ الخانات المحلية الفارغة فقط.
+        function mergeCloudRowsPreservingLocal(rows) {
+            const beforeCount = trainees.length;
+            if (beforeCount) writeLocalRecoverySnapshot(trainees, 'before-cloud-merge');
+            const merged = trainees.map(t => ({ ...t }));
+            const byId = new Map();
+            merged.forEach(t => { if (t?.id) byId.set(String(t.id), t); });
+            let added = 0, filledFields = 0;
+
+            for (const row of (Array.isArray(rows) ? rows : [])) {
+                const cloudT = { ...(row?.data || {}) };
+                if (!cloudT.id) cloudT.id = row?.id;
+                if (!cloudT.fileNo && row?.file_no) cloudT.fileNo = row.file_no;
+                if (!cloudT.id) {
+                    merged.push(cloudT);
+                    added++;
+                    continue;
+                }
+                const key = String(cloudT.id);
+                const local = byId.get(key);
+                if (!local) {
+                    const copy = { ...cloudT, batchNo: cloudT.batchNo == null ? '' : String(cloudT.batchNo) };
+                    merged.push(copy);
+                    byId.set(key, copy);
+                    added++;
+                    continue;
+                }
+                for (const [field, cloudValue] of Object.entries(cloudT)) {
+                    if (isEmptyRecordValue(local[field]) && !isEmptyRecordValue(cloudValue)) {
+                        local[field] = cloudValue;
+                        filledFields++;
+                    }
+                }
+            }
+
+            trainees = merged.map(t => ({ ...t, batchNo: t.batchNo == null ? '' : String(t.batchNo) }));
+            markCloudDirty('cloud-merge-pending-upload');
+            normalizeDuplicateFileNumbers();
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(trainees)); }
+            catch (e) { console.error('تعذر حفظ الدمج المحلي', e); }
+            generateAutoFileNo();
+            currentPage = 1;
+            filterTrainees();
+            updateStats();
+            return { beforeCount, added, filledFields, total: trainees.length };
+        }
+
+
+        function cloudRowsToTrainees(rows) {
+            return (Array.isArray(rows) ? rows : []).map(row => {
+                const data = { ...(row?.data || {}) };
+                if (!data.id) data.id = row?.id;
+                if (!data.fileNo && row?.file_no) data.fileNo = row.file_no;
+                data.batchNo = data.batchNo == null ? '' : String(data.batchNo);
+                return data;
+            }).filter(t => t && (t.id || t.fullName || t.fileNo));
+        }
+
+        function replaceLocalFromCloudAsSource(rows) {
+            const before = Array.isArray(trainees) ? trainees : [];
+            if (before.length) writeLocalRecoverySnapshot(before, 'before-cloud-primary-refresh');
+            trainees = cloudRowsToTrainees(rows);
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(trainees)); }
+            catch (e) { console.error('تعذر تحديث نسخة الأمان من قاعدة البيانات', e); }
+            clearCloudDirtyState();
+            normalizeDuplicateFileNumbers();
+            currentPage = 1;
+            generateAutoFileNo();
+            filterTrainees();
+            updateStats();
+            return trainees.length;
+        }
+
+        function lastSyncBelongsToCurrentUser(session) {
+            try {
+                const last = JSON.parse(localStorage.getItem(CLOUD_LAST_SYNC_KEY) || 'null');
+                return !!(session?.user?.id && last?.userId === session.user.id && last?.syncedAt);
+            } catch { return false; }
+        }
+
+        async function syncCloudAfterLogin() {
+            const cfg = getEffectiveCloudSettings();
+            const session = getCloudSession();
+            if (!cfg.url || !cfg.key || !session?.user?.id) return;
+            const status = document.getElementById('cloud_status');
+            status.textContent = 'جاري فحص ودمج البيانات المركزية دون حذف السجلات المحلية...';
+            try {
+                const r = await cloudFetch(`${cfg.url}/rest/v1/sasd_trainees?select=id,file_no,data,updated_at&owner_id=eq.${encodeURIComponent(session.user.id)}`);
+                if (!r.ok) throw new Error(await r.text());
+                const rows = await r.json();
+                if (!Array.isArray(rows)) throw new Error('صيغة البيانات المركزية غير صحيحة');
+
+                if (rows.length) {
+                    const localDirty = !!getCloudDirtyState()?.dirty;
+                    if (!localDirty && lastSyncBelongsToCurrentUser(session) && rows.length >= trainees.length) {
+                        const total = replaceLocalFromCloudAsSource(rows);
+                        status.textContent = `تم تحميل ${total} سجلًا من قاعدة البيانات المركزية. أصبحت بيانات Supabase هي النسخة الأساسية، ولم يتم حذف أي سجل من السحابة.`;
+                        showToast(`تم تحميل ${total} سجلًا من قاعدة البيانات`);
+                        refreshDataSafetyStatus();
+                        return;
+                    }
+                    const result = mergeCloudRowsPreservingLocal(rows);
+                    markCloudDirty('first-sync-or-pending-local-changes');
+                    const pushed = await pushToCloud(true);
+                    status.textContent = pushed
+                        ? `تم دمج النسخة الحالية ورفعها بنجاح. السابق محليًا: ${result.beforeCount}؛ أضيف من السحابة: ${result.added}؛ الإجمالي: ${result.total}. لم يتم حذف أي سجل.`
+                        : `تم الدمج دون حذف، لكن لم يتأكد الحفظ المركزي. الإجمالي ${result.total} سجلًا؛ بقيت نسخة الأمان المحلية محفوظة.`;
+                    showToast(pushed ? `تم حفظ ${result.total} سجلًا في قاعدة البيانات` : 'الحفظ السحابي لم يتأكد؛ بقيت نسخة الأمان المحلية');
+                    refreshDataSafetyStatus();
+                    return;
+                }
+
+                if (trainees.length) {
+                    const ok = confirm(`قاعدة البيانات المركزية فارغة، بينما يوجد ${trainees.length} سجلًا على هذا الجهاز. هل تريد رفعها إلى السحابة الآن؟ لن يتم حذف أي سجل.`);
+                    if (ok) {
+                        const pushed = await pushToCloud(false);
+                        status.textContent = pushed ? `تم رفع ${trainees.length} سجلًا إلى قاعدة البيانات المركزية.` : 'لم يتأكد الرفع. بقيت السجلات المحلية محفوظة؛ راجع إعداد الجدول وسياسات RLS.';
+                    } else {
+                        markCloudDirty('initial-cloud-upload-declined');
+                        status.textContent = 'تم تسجيل الدخول، لكن لم يتم رفع البيانات بعد. السجلات الحالية مؤقتة محليًا فقط ولم تُحذف.';
+                    }
+                } else {
+                    status.textContent = 'تم تسجيل الدخول. قاعدة البيانات المركزية فارغة ولا توجد سجلات محلية لرفعها.';
+                }
+                refreshDataSafetyStatus();
+            } catch (e) {
+                console.error(e);
+                status.textContent = 'تعذر مزامنة قاعدة البيانات: تأكد من وجود جدول sasd_trainees وسياسات RLS. لم تتم إزالة السجلات المحلية.';
+                refreshDataSafetyStatus();
+            }
+        }
+
+
+        async function loginWithPassword() {
+            const url = document.getElementById('cloud_url').value.trim().replace(/\/$/, '');
+            const key = document.getElementById('cloud_key').value.trim();
             const email = document.getElementById('cloud_email').value.trim();
             const password = document.getElementById('cloud_password').value;
             const status = document.getElementById('cloud_status');
-            if (!email || !password) { alert('أدخل البريد الإلكتروني وكلمة المرور.'); return; }
+            if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url)) { alert('أدخل رابط Supabase صحيحًا.'); return; }
+            if (!key) { alert('مفتاح Publishable / anon مطلوب.'); return; }
+            if (!email) { alert('أدخل بريد الحساب.'); return; }
+            if (!password) { alert('أدخل كلمة المرور التي أنشأتها في Supabase.'); return; }
+
+            localStorage.setItem(CLOUD_SETTINGS_KEY, JSON.stringify({ url, key, email }));
             status.textContent = 'جاري تسجيل الدخول...';
             try {
-                const r = await fetch(`${cfg.url}/auth/v1/token?grant_type=password`, {
-                    method: 'POST', headers: { 'apikey': cfg.key, 'Content-Type': 'application/json' },
+                const r = await fetch(`${url}/auth/v1/token?grant_type=password`, {
+                    method: 'POST',
+                    headers: { 'apikey': key, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
                 });
-                const data = await r.json();
-                if (!r.ok) throw new Error(data.error_description || data.msg || 'فشل تسجيل الدخول');
-                localStorage.setItem('SASD_CLOUD_SESSION_V1', JSON.stringify({ access_token: data.access_token, refresh_token: data.refresh_token, user: data.user }));
+                const data = await r.json().catch(() => ({}));
+                if (!r.ok || !data.access_token) {
+                    const msg = data.msg || data.error_description || data.error || 'بيانات الدخول غير صحيحة';
+                    throw new Error(msg);
+                }
+                const session = {
+                    access_token: data.access_token,
+                    refresh_token: data.refresh_token || '',
+                    user: data.user || { email }
+                };
+                localStorage.setItem('SASD_CLOUD_SESSION_V1', JSON.stringify(session));
                 document.getElementById('cloud_password').value = '';
                 status.textContent = `تم تسجيل الدخول بنجاح: ${data.user?.email || email}`;
-                showToast('تم تسجيل الدخول إلى قاعدة البيانات');
-            } catch (e) { console.error(e); status.textContent = 'فشل تسجيل الدخول: ' + e.message; }
+                try { localStorage.removeItem(CLOUD_LAST_ERROR_KEY); } catch (_) {}
+                refreshDataSafetyStatus();
+                showToast('تم تسجيل الدخول إلى قاعدة البيانات المركزية');
+                await syncCloudAfterLogin();
+            } catch (e) {
+                console.error(e);
+                status.textContent = 'فشل تسجيل الدخول: ' + e.message;
+            }
         }
 
 
         function logoutFromCloud() {
             localStorage.removeItem('SASD_CLOUD_SESSION_V1');
-            document.getElementById('cloud_status').textContent = 'تم تسجيل الخروج.';
+            document.getElementById('cloud_status').textContent = 'تم تسجيل الخروج. البيانات الآن ستبقى محليًا فقط حتى تسجيل الدخول مرة أخرى.';
+            refreshDataSafetyStatus();
             showToast('تم تسجيل الخروج من قاعدة البيانات');
         }
 
 
         async function testCloudConnection() {
             const cfg = getEffectiveCloudSettings();
-            const session = getCloudSession();
+            const session = await ensureCloudSession();
             if (!cfg.url || !cfg.key) { alert('إعدادات Supabase غير مكتملة.'); return; }
-            if (!session?.access_token || !session?.user?.id) { alert('هذه النسخة مجهزة بعنوان Supabase والمفتاح العام. على هذا الجهاز اضغط «تسجيل الدخول» واستخدم نفس حساب Supabase الذي توجد عليه سجلاتك.'); return; }
+            if (!session?.access_token || !session?.user?.id) {
+                alert('على هذا الجهاز أدخل نفس بريد الحساب وكلمة المرور ثم اضغط «تسجيل الدخول».');
+                return;
+            }
             const status = document.getElementById('cloud_status');
             status.textContent = 'جاري اختبار الاتصال...';
             try {
-                const r = await fetch(`${cfg.url}/rest/v1/sasd_trainees?select=id&limit=1`, { headers: cloudHeaders(cfg) });
+                const r = await cloudFetch(`${cfg.url}/rest/v1/sasd_trainees?select=id&limit=1`);
                 if (!r.ok) throw new Error(await r.text());
                 status.textContent = 'تم الاتصال بنجاح بقاعدة البيانات وبصلاحيات المستخدم.';
                 showToast('اتصال قاعدة البيانات ناجح');
-            } catch (e) { console.error(e); status.textContent = 'فشل الاتصال: تأكد من الجدول وRLS وتسجيل الدخول.'; }
+            } catch (e) {
+                console.error(e);
+                status.textContent = 'فشل الاتصال: تأكد من الجدول sasd_trainees وسياسات RLS.';
+            }
         }
 
 
         async function pushToCloud(silent = false) {
+            if (cloudPushInProgress) return false;
+            cloudPushInProgress = true;
             const cfg = getEffectiveCloudSettings();
-            const session = getCloudSession();
-            if (!cfg.url || !cfg.key) { if (!silent) alert('احفظ إعدادات Supabase أولًا.'); return; }
-            if (!session?.access_token || !session?.user?.id) { if (!silent) alert('سجّل الدخول أولًا.'); return; }
-            if (!trainees.length) { if (!silent) alert('لا توجد سجلات لرفعها.'); return; }
+            const session = await ensureCloudSession();
+            if (!cfg.url || !cfg.key) { cloudPushInProgress = false; if (!silent) alert('إعدادات Supabase غير مكتملة.'); refreshDataSafetyStatus(); return false; }
+            if (!session?.access_token || !session?.user?.id) { cloudPushInProgress = false; if (!silent) alert('افتح إعدادات قاعدة البيانات وسجّل الدخول أولًا.'); refreshDataSafetyStatus(); return false; }
             const status = document.getElementById('cloud_status');
-            if (!silent) status.textContent = `جاري رفع ${trainees.length} سجلًا...`;
+            if (!trainees.length) { cloudPushInProgress = false; if (!silent) alert('لا توجد سجلات لرفعها.'); refreshDataSafetyStatus(); return false; }
+            if (!silent && status) status.textContent = `جاري رفع ${trainees.length} سجلًا إلى قاعدة البيانات المركزية...`;
             try {
                 const rows = trainees.map(t => ({ owner_id: session.user.id, id: String(t.id || crypto.randomUUID()), file_no: String(t.fileNo || ''), data: t, updated_at: new Date().toISOString() }));
-                const r = await fetch(`${cfg.url}/rest/v1/sasd_trainees?on_conflict=owner_id,id`, { method: 'POST', headers: cloudHeaders(cfg), body: JSON.stringify(rows) });
+                const r = await cloudFetch(`${cfg.url}/rest/v1/sasd_trainees?on_conflict=owner_id,id`, {
+                    method: 'POST',
+                    headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+                    body: JSON.stringify(rows)
+                });
                 if (!r.ok) throw new Error(await r.text());
 
-                // مزامنة الحذف أيضاً: أي سجل موجود في السحابة وغير موجود محلياً يُحذف من نفس حساب المستخدم.
-                const existingResp = await fetch(`${cfg.url}/rest/v1/sasd_trainees?select=id&owner_id=eq.${encodeURIComponent(session.user.id)}`, { headers: cloudHeaders(cfg) });
-                if (existingResp.ok) {
-                    const existingRows = await existingResp.json();
-                    const localIds = new Set(rows.map(x => String(x.id)));
-                    const staleIds = existingRows.map(x => String(x.id)).filter(id => !localIds.has(id));
-                    for (const staleId of staleIds) {
-                        await fetch(`${cfg.url}/rest/v1/sasd_trainees?id=eq.${encodeURIComponent(staleId)}&owner_id=eq.${encodeURIComponent(session.user.id)}`, { method: 'DELETE', headers: cloudHeaders(cfg) });
-                    }
+                // لا توجد عملية حذف من السحابة في هذا المسار؛ نحدّث/نضيف فقط.
+                localStorage.setItem(CLOUD_LAST_SYNC_KEY, JSON.stringify({ userId: session.user.id, syncedAt: new Date().toISOString(), recordCount: rows.length }));
+                clearCloudDirtyState();
+                cloudPushInProgress = false;
+                if (!silent && status) {
+                    status.textContent = `تم رفع/تحديث ${rows.length} سجلًا إلى قاعدة البيانات المركزية دون حذف السجلات الأخرى.`;
+                    showToast(`تم حفظ ${rows.length} سجلًا في قاعدة البيانات المركزية`);
                 }
-                if (!silent) { status.textContent = `تمت مزامنة ${rows.length} سجلًا مع السحابة.`; showToast(`تمت مزامنة ${rows.length} سجلًا مع قاعدة البيانات`); }
-            } catch (e) { console.error(e); if (!silent) status.textContent = 'فشل الرفع: تحقق من الجدول وRLS والمفتاح.'; }
+                refreshDataSafetyStatus();
+                return true;
+            } catch (e) {
+                console.error(e);
+                cloudPushInProgress = false;
+                markCloudDirty('cloud-save-failed');
+                try { localStorage.setItem(CLOUD_LAST_ERROR_KEY, String(e?.message || e).slice(0, 400)); } catch (_) {}
+                if (!silent && status) status.textContent = 'فشل الحفظ المركزي: بقيت نسخة الأمان المحلية كما هي. افتح تفاصيل الخطأ وتحقق من الجدول وسياسات RLS.';
+                refreshDataSafetyStatus();
+                return false;
+            }
         }
 
 
         async function pullFromCloud() {
             const cfg = getEffectiveCloudSettings();
-            const session = getCloudSession();
-            if (!cfg.url || !cfg.key) { alert('احفظ إعدادات Supabase أولًا.'); return; }
+            const session = await ensureCloudSession();
+            if (!cfg.url || !cfg.key) { alert('إعدادات Supabase غير مكتملة.'); return; }
             if (!session?.access_token || !session?.user?.id) { alert('سجّل الدخول أولًا.'); return; }
             const status = document.getElementById('cloud_status');
-            status.textContent = 'جاري سحب البيانات...';
+            if (status) status.textContent = 'جاري تحميل بيانات السحابة ودمجها دون حذف المحلي...';
             try {
-                const r = await fetch(`${cfg.url}/rest/v1/sasd_trainees?select=id,file_no,data,updated_at&owner_id=eq.${encodeURIComponent(session.user.id)}`, { headers: cloudHeaders(cfg) });
+                const r = await cloudFetch(`${cfg.url}/rest/v1/sasd_trainees?select=id,file_no,data,updated_at&owner_id=eq.${encodeURIComponent(session.user.id)}`);
                 if (!r.ok) throw new Error(await r.text());
                 const rows = await r.json();
-                const map = new Map(trainees.map(t => [String(t.id || `${t.fileNo || ''}|${t.fullName || ''}`), t]));
-                let added = 0, updated = 0;
-                for (const row of rows) {
-                    const t = row.data || {};
-                    if (!t.id) t.id = row.id;
-                    const key = String(t.id || row.id);
-                    if (map.has(key)) { map.set(key, { ...map.get(key), ...t }); updated++; }
-                    else { map.set(key, t); added++; }
+                if (!Array.isArray(rows)) throw new Error('صيغة البيانات غير صحيحة');
+                if (!rows.length) {
+                    if (status) status.textContent = 'قاعدة البيانات المركزية فارغة. لم يتم تغيير أو حذف السجلات المحلية.';
+                    showToast('السحابة فارغة؛ بقيت السجلات المحلية كما هي');
+                    refreshDataSafetyStatus();
+                    return;
                 }
-                trainees = Array.from(map.values());
-                normalizeDuplicateFileNumbers();
-                saveToStorage(); generateAutoFileNo(); filterTrainees(); updateStats();
-                status.textContent = `تم السحب: إضافة ${added} وتحديث ${updated}. لم يتم حذف أي سجل محلي.`;
-                showToast(`تم دمج بيانات السحابة: +${added} / تحديث ${updated}`);
-            } catch (e) { console.error(e); status.textContent = 'فشل السحب: تحقق من الجدول وRLS والمفتاح.'; }
+                const ok = confirm(`سيتم دمج ${rows.length} سجلًا من السحابة مع السجلات المحلية الحالية (${trainees.length}). لن يتم حذف أي سجل، وستبقى القيم المحلية غير الفارغة محفوظة. هل تريد المتابعة؟`);
+                if (!ok) return;
+                const result = mergeCloudRowsPreservingLocal(rows);
+                const pushed = await pushToCloud(true);
+                if (status) status.textContent = pushed
+                    ? `اكتمل الدمج والرفع. أُضيف ${result.added} سجلًا من السحابة، وأصبح الإجمالي ${result.total} سجلًا.`
+                    : `اكتمل الدمج المحلي وأصبح الإجمالي ${result.total} سجلًا، لكن لم يتأكد الرفع إلى السحابة.`;
+                showToast(`تم دمج البيانات دون حذف. الإجمالي ${result.total} سجلًا.`);
+                refreshDataSafetyStatus();
+            } catch (e) {
+                console.error(e);
+                if (status) status.textContent = 'فشل التحميل/الدمج: تحقق من وجود جدول sasd_trainees وسياسات RLS. لم تتم إزالة السجلات المحلية.';
+                refreshDataSafetyStatus();
+            }
         }
 
 
         async function autoPullCloudOnStartup() {
             const cfg = getEffectiveCloudSettings();
-            const session = getCloudSession();
-            if (!cfg.url || !cfg.key || !session?.access_token || !session?.user?.id) return;
+            if (!cfg.url || !cfg.key) { refreshDataSafetyStatus(); return; }
+            const session = await ensureCloudSession();
+            if (!session?.user?.id) {
+                refreshDataSafetyStatus();
+                if (!trainees.length) setTimeout(() => openCloudSettings(), 500);
+                return;
+            }
             try {
-                const r = await fetch(`${cfg.url}/rest/v1/sasd_trainees?select=id,file_no,data,updated_at&owner_id=eq.${encodeURIComponent(session.user.id)}`, { headers: cloudHeaders(cfg) });
-                if (!r.ok) return;
+                const r = await cloudFetch(`${cfg.url}/rest/v1/sasd_trainees?select=id,file_no,data,updated_at&owner_id=eq.${encodeURIComponent(session.user.id)}`);
+                if (!r.ok) throw new Error(await r.text());
                 const rows = await r.json();
-                if (!Array.isArray(rows) || !rows.length) return;
-                const map = new Map(trainees.map(t => [String(t.id || `${t.fileNo || ''}|${t.fullName || ''}`), t]));
-                for (const row of rows) {
-                    const cloudT = row.data || {};
-                    if (!cloudT.id) cloudT.id = row.id;
-                    const key = String(cloudT.id || row.id);
-                    map.set(key, { ...(map.get(key) || {}), ...cloudT });
-                }
-                trainees = Array.from(map.values());
-                normalizeDuplicateFileNumbers();
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(trainees));
-                // إذا تم إصلاح أرقام مكررة بعد السحب، ادفع التصحيح إلى السحابة أيضًا.
-                setTimeout(() => {
-                    if (getEffectiveCloudSettings().url && getEffectiveCloudSettings().key && getCloudSession()?.access_token) {
-                        pushToCloud(true);
+                if (Array.isArray(rows) && rows.length) {
+                    const localDirty = !!getCloudDirtyState()?.dirty;
+                    if (!localDirty && lastSyncBelongsToCurrentUser(session) && rows.length >= trainees.length) {
+                        const total = replaceLocalFromCloudAsSource(rows);
+                        showToast(`تم تحميل ${total} سجلًا من قاعدة البيانات المركزية`);
+                    } else {
+                        const result = mergeCloudRowsPreservingLocal(rows);
+                        const pushed = await pushToCloud(true);
+                        showToast(pushed ? `تم حفظ ${result.total} سجلًا في قاعدة البيانات دون حذف` : `دُمجت ${result.total} سجلًا محليًا، لكن يجب إعادة محاولة الحفظ السحابي`);
                     }
-                }, 0);
-                generateAutoFileNo();
-                filterTrainees();
-                updateStats();
-                showToast(`تمت مزامنة ${trainees.length} سجلًا من قاعدة البيانات السحابية`);
-            } catch (e) { console.warn('Cloud startup sync skipped', e); }
+                } else if (Array.isArray(rows) && !rows.length && trainees.length) {
+                    const ok = confirm(`قاعدة البيانات المركزية فارغة. يوجد ${trainees.length} سجلًا محليًا. هل تريد رفع هذه السجلات لتصبح لها نسخة سحابية؟`);
+                    if (ok) await pushToCloud(false);
+                }
+            } catch (e) {
+                console.warn('تعذر التحقق من المزامنة السحابية عند بدء التشغيل', e);
+                const status = document.getElementById('cloud_status');
+                if (status) status.textContent = 'تعذر الاتصال بالسحابة. بقيت البيانات المحلية محفوظة ولم يتم حذفها.';
+            }
+            refreshDataSafetyStatus();
         }
 
 

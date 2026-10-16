@@ -678,7 +678,341 @@
             #view-dashboard .actions-cell { min-width: 175px !important; width: 175px !important; max-width: 175px !important; }
         }
 
-    </style>
+    
+
+        /* Mobile-first refinement for SASD: form, dashboard, filters and dialogs */
+        @media (max-width: 767px) {
+            html, body {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+
+            .sasd-topbar-inner {
+                padding-left: .65rem !important;
+                padding-right: .65rem !important;
+            }
+            .sasd-topbar-inner > .flex.items-center.justify-between {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                justify-content: flex-start !important;
+                gap: .65rem !important;
+                min-height: 0 !important;
+                padding: .65rem 0 .8rem !important;
+            }
+            .sasd-topbar-inner > .flex.items-center.justify-between > div:first-child {
+                width: 100%;
+                min-width: 0;
+                gap: .6rem !important;
+            }
+            .sasd-topbar .sasd-logo-box {
+                width: 46px !important;
+                height: 46px !important;
+                flex: 0 0 46px;
+                padding: .25rem !important;
+            }
+            .sasd-topbar .sasd-logo-box img {
+                max-width: 40px !important;
+                max-height: 40px !important;
+                width: auto !important;
+            }
+            .sasd-topbar .sasd-brand-text {
+                flex: 1 1 auto;
+                min-width: 0;
+            }
+            .sasd-topbar .sasd-brand-text h1 {
+                font-size: 1.1rem !important;
+                line-height: 1.35 !important;
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+            }
+            .sasd-topbar .sasd-brand-text > div {
+                font-size: .68rem !important;
+                line-height: 1.4 !important;
+                white-space: normal;
+            }
+
+            .sasd-topbar-inner > .flex.items-center.justify-between > div:nth-child(2) {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: wrap !important;
+                align-items: stretch !important;
+                justify-content: stretch !important;
+                gap: .45rem !important;
+                width: 100%;
+                min-width: 0;
+            }
+            .sasd-topbar-inner nav {
+                order: 1;
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: .35rem !important;
+                width: 100%;
+                margin: 0;
+                padding: .3rem !important;
+                border-radius: .85rem !important;
+            }
+            .sasd-topbar-inner nav button {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                gap: .35rem;
+                min-width: 0;
+                min-height: 42px;
+                padding: .55rem .35rem !important;
+                font-size: .78rem !important;
+                line-height: 1.35 !important;
+                white-space: normal;
+                text-align: center;
+            }
+            .sasd-topbar-inner nav button span.hidden.sm\\:inline {
+                display: inline !important;
+            }
+            .sasd-topbar-inner nav button i {
+                margin: 0 !important;
+                flex: 0 0 auto;
+            }
+            .sasd-topbar-inner > .flex.items-center.justify-between > div:nth-child(2) > button[onclick="printBlankRegistrationForm()"] {
+                order: 2;
+                display: flex !important;
+                flex: 1 1 100%;
+                align-items: center;
+                justify-content: center;
+                min-height: 42px;
+                padding: .55rem .7rem !important;
+                font-size: .78rem !important;
+            }
+
+            body > main {
+                padding: .9rem .65rem 1.25rem !important;
+                width: 100%;
+                max-width: 100%;
+            }
+            main > div.no-print.mb-4 {
+                display: grid !important;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: .4rem !important;
+                margin-bottom: .8rem !important;
+            }
+            main > div.no-print.mb-4 button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: .2rem;
+                min-width: 0;
+                min-height: 42px;
+                padding: .5rem .3rem !important;
+                font-size: .72rem !important;
+                line-height: 1.35;
+                white-space: normal;
+                text-align: center;
+            }
+
+            #view-form,
+            #view-dashboard {
+                width: 100%;
+                min-width: 0;
+                gap: 1rem !important;
+            }
+            #view-form > div:first-child {
+                padding: .9rem !important;
+                border-radius: 1rem !important;
+            }
+            #view-form > div:first-child > div:first-child {
+                align-items: stretch !important;
+                gap: .8rem !important;
+                margin-bottom: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+            #view-form > div:first-child > div:first-child > div:first-child {
+                min-width: 0;
+                width: 100%;
+            }
+            #view-form h2 {
+                font-size: 1.25rem !important;
+                line-height: 1.5 !important;
+            }
+            #view-form > div:first-child .flex.items-center.gap-3.bg-slate-50 {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: .55rem !important;
+                width: 100%;
+                padding: .65rem !important;
+            }
+            #view-form > div:first-child .flex.items-center.gap-3.bg-slate-50 > div {
+                min-width: 0;
+                width: 100%;
+            }
+            #view-form > div:first-child .flex.items-center.gap-3.bg-slate-50 input {
+                width: 100% !important;
+                max-width: 100%;
+                min-width: 0;
+                font-size: 16px !important;
+            }
+            #traineeRegistrationForm {
+                gap: 1.25rem !important;
+            }
+            #traineeRegistrationForm .grid {
+                gap: .75rem !important;
+            }
+            #traineeRegistrationForm label {
+                line-height: 1.55;
+            }
+            #traineeRegistrationForm input:not([type="checkbox"]):not([type="radio"]),
+            #traineeRegistrationForm select,
+            #traineeRegistrationForm textarea {
+                box-sizing: border-box;
+                max-width: 100%;
+                min-width: 0;
+                font-size: 16px !important;
+            }
+            #traineeRegistrationForm input:not([type="checkbox"]):not([type="radio"]),
+            #traineeRegistrationForm select {
+                min-height: 43px;
+            }
+            #traineeRegistrationForm textarea {
+                min-height: 84px;
+            }
+            #traineeRegistrationForm .grid.grid-cols-2 label,
+            #traineeRegistrationForm .grid.grid-cols-2.sm\\:grid-cols-4 label {
+                min-width: 0;
+            }
+            #form-evaluation-page {
+                padding: .9rem !important;
+                margin-top: 1rem !important;
+                gap: 1rem !important;
+                border-radius: 1rem !important;
+            }
+            #form-evaluation-page .bg-white.p-5,
+            #form-evaluation-page .bg-white.p-4 {
+                padding: .8rem !important;
+            }
+
+            #view-dashboard > div:first-child > div {
+                padding: .85rem !important;
+                gap: .65rem !important;
+            }
+            #view-dashboard > div:first-child h4 {
+                font-size: 1.45rem !important;
+            }
+            #view-dashboard > div:nth-child(2) {
+                padding: .8rem !important;
+                border-radius: 1rem !important;
+            }
+            #view-dashboard .overflow-x-auto {
+                max-width: 100%;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior-x: contain;
+            }
+            #view-dashboard table {
+                white-space: normal;
+            }
+            #view-dashboard table th,
+            #view-dashboard table td {
+                padding: .55rem .5rem !important;
+            }
+            #view-dashboard .actions-header,
+            #view-dashboard .actions-cell {
+                position: static !important;
+                left: auto !important;
+                min-width: 220px !important;
+                width: 220px !important;
+                box-shadow: none !important;
+            }
+
+            #trainees-pagination-top {
+                align-items: stretch !important;
+                padding: .75rem !important;
+                gap: .65rem !important;
+            }
+            #pagination-controls-top {
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center !important;
+                gap: .3rem;
+            }
+            #pagination-controls-top button {
+                min-width: 38px;
+                min-height: 38px;
+            }
+
+            #certificateModal,
+            #evalModal,
+            #endCourseModal,
+            #viewDiagnosticModal,
+            #cloudSettingsModal {
+                padding: .45rem !important;
+                align-items: center !important;
+            }
+            #certificateModal > div,
+            #evalModal > div,
+            #endCourseModal > div,
+            #viewDiagnosticModal > div,
+            #cloudSettingsModal > div {
+                width: 100% !important;
+                max-width: 100% !important;
+                max-height: calc(100dvh - .9rem) !important;
+                overflow-y: auto !important;
+                overscroll-behavior: contain;
+                border-radius: 1rem !important;
+            }
+            #certificateModal .p-6,
+            #cloudSettingsModal .p-5,
+            #evalModal .p-6,
+            #endCourseModal .p-6,
+            #viewDiagnosticModal .p-6 {
+                padding: .9rem !important;
+            }
+            #cloudSettingsModal input,
+            #cloudSettingsModal select,
+            #cloudSettingsModal button,
+            #certificateModal input,
+            #certificateModal select,
+            #evalModal input,
+            #evalModal select,
+            #evalModal textarea {
+                min-width: 0;
+                max-width: 100%;
+                font-size: 16px !important;
+            }
+
+            #toast {
+                left: .5rem !important;
+                right: .5rem !important;
+                bottom: .5rem !important;
+            }
+            #toast-body {
+                padding: .7rem .85rem !important;
+                gap: .5rem !important;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .sasd-topbar-inner > .flex.items-center.justify-between {
+                flex-wrap: wrap;
+                gap: .75rem;
+                padding-top: .75rem;
+                padding-bottom: .75rem;
+            }
+            .sasd-topbar-inner > .flex.items-center.justify-between > div:nth-child(2) {
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                gap: .45rem;
+            }
+            .sasd-topbar-inner > .flex.items-center.justify-between > div:nth-child(2) > button[onclick="printBlankRegistrationForm()"] {
+                white-space: nowrap;
+            }
+            body > main {
+                padding-left: 1rem;
+                padding-right: 1rem;
+                padding-top: 1.25rem;
+            }
+        }
+</style>
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col justify-between">
     <!-- Header with Official SASD Logo & Location "معرتمصرين" -->

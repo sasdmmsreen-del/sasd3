@@ -2043,6 +2043,15 @@
                         <div><span class="text-slate-500 font-bold block">تاريخ التقييم</span><input id="end_course_date" type="date" class="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-300 bg-white text-xs"></div>
                     </div>
 
+                    <section class="rounded-xl border border-blue-200 bg-blue-50 p-4 space-y-3">
+                        <h4 class="font-black text-blue-900"><i class="fa-solid fa-calculator ml-1"></i> العلامات الدراسية</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div><label for="end_study_score" class="block text-sm font-bold text-slate-700 mb-1">علامة المذاكرة (من 100)</label><input id="end_study_score" type="number" min="0" max="100" step="0.5" inputmode="decimal" oninput="updateEndCourseTotal()" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white" placeholder="0 - 100"></div>
+                            <div><label for="end_exam_score" class="block text-sm font-bold text-slate-700 mb-1">علامة الامتحان (من 100)</label><input id="end_exam_score" type="number" min="0" max="100" step="0.5" inputmode="decimal" oninput="updateEndCourseTotal()" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white" placeholder="0 - 100"></div>
+                            <div><label for="end_total_score" class="block text-sm font-bold text-slate-700 mb-1">محصلة العلامتين (من 100)</label><input id="end_total_score" type="text" readonly class="w-full px-3 py-2.5 rounded-xl border border-blue-300 bg-blue-100 text-blue-900 font-black" value="—" aria-live="polite"><p class="text-xs text-slate-500 mt-1">المحصلة = متوسط علامتي المذاكرة والامتحان</p></div>
+                        </div>
+                    </section>
+
                     <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
                         <table class="w-full text-right text-xs min-w-[760px]">
                             <thead class="bg-slate-50 text-slate-900 font-bold border-b border-slate-200">
@@ -2064,6 +2073,14 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <section class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 space-y-4">
+                        <h4 class="font-black text-emerald-900"><i class="fa-solid fa-handshake-angle ml-1"></i> السلوك والمسؤولية أثناء التدريب</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><label for="end_honesty_rating" class="block text-sm font-bold text-slate-800 mb-1.5">الأمانة والمحافظة على موجودات الصالة</label><select id="end_honesty_rating" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white"><option value="">اختر التقييم</option><option value="ممتاز">ممتاز</option><option value="جيد">جيد</option><option value="مقبول">مقبول</option><option value="بحاجة إلى تحسين">بحاجة إلى تحسين</option></select></div>
+                            <div><label for="end_peer_help_rating" class="block text-sm font-bold text-slate-800 mb-1.5">مساعدة باقي المتدربين على تجاوز المشكلات أثناء التدريب</label><select id="end_peer_help_rating" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white"><option value="">اختر التقييم</option><option value="ممتاز">ممتاز</option><option value="جيد">جيد</option><option value="مقبول">مقبول</option><option value="بحاجة إلى تحسين">بحاجة إلى تحسين</option></select></div>
+                        </div>
+                    </section>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
@@ -3328,6 +3345,13 @@
             document.getElementById('end_course_phone').innerText = t.traineePhone || '---';
             document.getElementById('end_course_date').value = t.endCourseEvaluation?.evaluationDate || new Date().toISOString().split('T')[0];
 
+            const ev = t.endCourseEvaluation || {};
+            document.getElementById('end_study_score').value = ev.studyScore ?? '';
+            document.getElementById('end_exam_score').value = ev.examScore ?? '';
+            updateEndCourseTotal();
+            document.getElementById('end_honesty_rating').value = ev.honestyRating || '';
+            document.getElementById('end_peer_help_rating').value = ev.peerHelpRating || '';
+
             const skills = t.endCourseEvaluation?.skills || t.skills || {};
             for (let i = 1; i <= 6; i++) {
                 const sk = skills['skill_' + i] || {};
@@ -3335,7 +3359,6 @@
                 document.getElementById(`end_skill_${i}_notes`).value = sk.note || '';
             }
 
-            const ev = t.endCourseEvaluation || {};
             document.querySelectorAll('input[name="end_attended_full"]').forEach(el => { el.checked = el.value === (ev.attendedFullCourse === true ? 'نعم' : ev.attendedFullCourse === false ? 'لا' : ''); });
             document.getElementById('end_absence_days').value = Number.isFinite(Number(ev.absenceDays)) ? Number(ev.absenceDays) : 0;
             toggleAbsenceDaysField(ev.attendedFullCourse === false);
@@ -3350,6 +3373,17 @@
         }
 
 
+        function updateEndCourseTotal() {
+            const studyRaw = document.getElementById('end_study_score').value;
+            const examRaw = document.getElementById('end_exam_score').value;
+            const output = document.getElementById('end_total_score');
+            const validScore = value => value !== '' && Number.isFinite(Number(value)) && Number(value) >= 0 && Number(value) <= 100;
+            if (validScore(studyRaw) && validScore(examRaw)) {
+                const total = (Number(studyRaw) + Number(examRaw)) / 2;
+                output.value = Number.isInteger(total) ? String(total) : total.toFixed(1);
+            } else { output.value = '—'; }
+        }
+
         function readEndCourseEvaluationForm() {
             const skills = {};
             for (let i = 1; i <= 6; i++) {
@@ -3359,8 +3393,18 @@
                 };
             }
             const attendedValue = document.querySelector('input[name="end_attended_full"]:checked')?.value || '';
+            const studyRaw = document.getElementById('end_study_score').value;
+            const examRaw = document.getElementById('end_exam_score').value;
+            const scoreIsValid = value => value !== '' && Number.isFinite(Number(value)) && Number(value) >= 0 && Number(value) <= 100;
+            const studyScore = scoreIsValid(studyRaw) ? Number(studyRaw) : null;
+            const examScore = scoreIsValid(examRaw) ? Number(examRaw) : null;
             return {
                 skills,
+                studyScore,
+                examScore,
+                totalScore: studyScore !== null && examScore !== null ? (studyScore + examScore) / 2 : null,
+                honestyRating: document.getElementById('end_honesty_rating').value,
+                peerHelpRating: document.getElementById('end_peer_help_rating').value,
                 attendedFullCourse: attendedValue === 'نعم' ? true : attendedValue === 'لا' ? false : null,
                 absenceDays: attendedValue === 'لا' ? Math.max(0, parseInt(document.getElementById('end_absence_days').value || '0', 10) || 0) : 0,
                 trainerName: document.getElementById('end_trainer_name').value.trim(),
@@ -3421,6 +3465,21 @@
                     <thead><tr><th class="border border-slate-500 p-2">المهارة</th><th class="border border-slate-500 p-2">النتيجة</th><th class="border border-slate-500 p-2">ملاحظات المدرب</th></tr></thead>
                     <tbody>${skillsRows}</tbody>
                 </table>
+                <div class="mt-4 rounded-lg border border-blue-300 p-3">
+                    <h3 class="font-black mb-2">العلامات الدراسية</h3>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div><strong>علامة المذاكرة:</strong> ${ev.studyScore ?? '---'} / 100</div>
+                        <div><strong>علامة الامتحان:</strong> ${ev.examScore ?? '---'} / 100</div>
+                        <div><strong>المحصلة:</strong> ${ev.totalScore ?? (ev.studyScore != null && ev.examScore != null ? (Number(ev.studyScore) + Number(ev.examScore)) / 2 : '---')} / 100</div>
+                    </div>
+                </div>
+                <div class="mt-4 rounded-lg border border-emerald-300 p-3">
+                    <h3 class="font-black mb-2">السلوك والمسؤولية</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><strong>الأمانة والمحافظة على موجودات الصالة:</strong> ${ev.honestyRating || '---'}</div>
+                        <div><strong>مساعدة باقي المتدربين على تجاوز المشكلات أثناء التدريب:</strong> ${ev.peerHelpRating || '---'}</div>
+                    </div>
+                </div>
                 <div class="grid grid-cols-2 gap-3 mt-4">
                     <div><strong>هل تم حضور الدورة كاملة؟</strong> ${ev.attendedFullCourse === true ? 'نعم' : ev.attendedFullCourse === false ? 'لا' : '---'}</div>
                     <div><strong>عدد أيام الغياب:</strong> ${ev.absenceDays ?? '---'}</div>
